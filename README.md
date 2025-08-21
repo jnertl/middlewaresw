@@ -24,12 +24,22 @@ Requirement: GoogleTest (gtest) must be installed
 
 ## Run
 
-- Run the main application:
+- Run the main application (builds if needed):
   ```bash
-  ./middlewaresw <UpdateIntervalMs>
+  ./run_app.sh <UpdateIntervalMs>
   ```
+
 - Run unit tests:
   ```bash
   ./run_tests.sh
   ```
+
+## Socket Client Example
+
+You can use the provided Python client to connect to the app's socket server (port 5555) and receive live engine data every second:
+
+```bash
+python3 test_client.py
+```
+The client will print the latest RPM and temperature values received from the server. You can stop the client with Ctrl+C.
 

@@ -1,36 +1,35 @@
-# middlewaresw_create
+# middlewaresw
 
 ## Overview
-A C++ project demonstrating a periodic receiver with Google Test support.
+A C++ project demonstrating a periodic console print.
 
 ## Features
 - `main.cpp` accepts an integer argument `UpdateIntervalMs` (milliseconds)
-- `Receiver` class: `Get()` stores a random integer (0-300)
-- `Engine` interface class: `getSpeed()` returns an integer
-- Main loop calls `Receiver::Get()` periodically based on `UpdateIntervalMs`
-- Unit tests using Google Test (gtest)
+- `Receiver` class: provides `GetRpm()` and `GetTemperature()` methods returning random values in defined ranges
+- `Engine` interface class: declares `getRpm()` and `getTemperature()` as pure virtual methods
+- `EngineImpl` implements `Engine` and uses `Receiver` to provide RPM and temperature values
+- Main loop in `main.cpp` calls `Receiver` methods periodically based on `UpdateIntervalMs`
+- Unit tests for both `Receiver` and `EngineImpl` using Google Test (gtest)
+- Build script (`build.sh`) for building and cleaning the project
+- Test script (`run_tests.sh`) for running all unit tests
 
 ## Build Instructions
 
-1. Clone GoogleTest into the `tests` directory:
-   ```bash
-   git clone https://github.com/google/googletest.git tests/lib/googletest
-   ```
-2. Build the project:
-   ```bash
-   mkdir -p build && cd build
-   cmake ..
-   make
-   ```
+Requirement: GoogleTest (gtest) must be installed  
+
+- Build main application:
+  ```bash
+  ./build.sh
+  ```
 
 ## Run
 
 - Run the main application:
   ```bash
-  ./middlewaresw_create <UpdateIntervalMs>
+  ./middlewaresw <UpdateIntervalMs>
   ```
 - Run unit tests:
   ```bash
-  cd build
-  ctest
+  ./run_tests.sh
   ```
+

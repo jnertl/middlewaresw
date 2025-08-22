@@ -15,7 +15,21 @@ A C++ project demonstrating a periodic console print.
 
 ## Build Instructions
 
-Requirement: GoogleTest (gtest) must be installed  
+## Requirements
+- Python 3.7+
+- PyQt5
+- sudo apt install python3-pip python3-venv 
+- GoogleTest (gtest) must be installed  
+- Protocol Buffers (protobuf) C++ library and compiler must be installed:
+  ```bash
+  sudo apt-get install libprotobuf-dev protobuf-compiler
+  ```
+  
+  The project uses `engine_data.proto` to generate `engine_data.pb.h` and `engine_data.pb.cc` (already included in the repo). If you modify `engine_data.proto`, regenerate these files with:
+  ```bash
+  protoc --cpp_out=include engine_data.proto
+  ```
+  (You may need to adjust the output path if your structure changes.)
 
 - Build main application:
   ```bash
@@ -37,6 +51,17 @@ Requirement: GoogleTest (gtest) must be installed
 ## Socket Client Example
 
 You can use the provided Python client to connect to the app's socket server (port 5555) and receive live engine data every second:
+
+1. **Create and activate a virtual environment:**
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   pip install protobuf
+   ```
 
 ```bash
 python3 test_client.py

@@ -10,6 +10,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include "Engine.h"
+#include "engine_data.pb.h"
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
@@ -68,15 +69,22 @@ int main(int argc, char* argv[]) {
             ssize_t valread;
             while ((valread = read(client_fd, buffer, sizeof(buffer)-1)) > 0) {
                 buffer[valread] = '\0';
-                // On any request, send the latest values
+                // On any request, send the latest values as protobuf
                 int rpm, temp;
                 {
                     std::lock_guard<std::mutex> lock(data_mutex);
                     rpm = latest_rpm;
                     temp = latest_temperature;
                 }
-                std::string response = "RPM: " + std::to_string(rpm) + ", TEMP: " + std::to_string(temp) + "\n";
-                send(client_fd, response.c_str(), response.size(), 0);
+                EngineData msg;
+                msg.set_rpm(rpm);
+                msg.set_temperature(temp);
+                std::string out;
+                msg.SerializeToString(&out);
+                // Send size prefix (uint32_t, network byte order)
+                uint32_t size = htonl(static_cast<uint32_t>(out.size()));
+                send(client_fd, &size, sizeof(size), 0);
+                send(client_fd, out.data(), out.size(), 0);
             }
             std::cout << "Client disconnected." << std::endl;
             close(client_fd);

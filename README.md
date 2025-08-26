@@ -68,3 +68,19 @@ python3 test_client.py
 ```
 The client will print the latest RPM and temperature values received from the server. You can stop the client with Ctrl+C.
 
+## Test Coverage for C++
+
+To build and view a C++ code coverage report:
+
+1. Install lcov (if not already):
+  ```bash
+  sudo apt-get install lcov
+  ```
+2. Run the coverage script:
+  ```bash
+  ./run_coverage.sh
+  ```
+3. Open the generated HTML report:
+  ```bash
+  xdg-open coverage_html/index.html
+  ```

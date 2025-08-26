@@ -3,7 +3,6 @@ project(middlewaresw)
 
 set(CMAKE_CXX_STANDARD 17)
 
-
 set(Protobuf_INCLUDE_DIR /usr/include)
 set(Protobuf_LIBRARIES /usr/lib/x86_64-linux-gnu/libprotobuf.so)
 find_package(Protobuf REQUIRED)

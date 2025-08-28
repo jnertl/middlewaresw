@@ -30,7 +30,8 @@ make -j$(nproc)
 
 # Capture coverage data
 echo "Capturing coverage..."
-lcov --capture --directory . --output-file $COVERAGE_INFO --ignore-errors mismatch,mismatch -rc geninfo_unexecuted_blocks=1
+#  --ignore-errors mismatch,mismatch
+lcov --capture --directory . --output-file $COVERAGE_INFO -rc geninfo_unexecuted_blocks=1
 
 # Remove coverage for system and test files
 echo "Filtering coverage..."

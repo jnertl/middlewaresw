@@ -8,4 +8,4 @@ if [ ! -d "$BUILD_DIR" ]; then
     ./build.sh
 fi
 
-build/tests/runUnitTests
+build/tests/runUnitTests --gtest_output=xml:gtestresults.xml

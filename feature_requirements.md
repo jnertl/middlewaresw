@@ -25,7 +25,7 @@
 ## Requirements for Testing
 
 ### [REQ100] Debug Support
-- Application periodically prints engine RPM and temperature to the console
+- Application periodically prints engine RPM, oil pressure and temperature to the console
 
 ### [REQ101] Unit Tests
 - Test all classes and methods using GoogleTest

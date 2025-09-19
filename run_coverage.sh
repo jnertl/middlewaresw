@@ -26,7 +26,7 @@ cmake ../coverage
 make -j$(nproc)
 
 # Run tests
-./test_coverage
+./test_coverage > /dev/null 2>&1
 
 # Clean and explude test artifacts from coverage
 echo "Clean test artifacts folder: middlewaresw/tests..."

@@ -2,8 +2,8 @@
 *.d
 
 # Build directories
-build/
-build-*
+build_*/
+
 # Compiled Object files
 *.slo
 *.lo
@@ -46,5 +46,14 @@ build-*
 # Python cache
 __pycache__/
 
-# Test reports
+# Test and coverage reports
 gtestresults.xml
+coverage_html
+
+# IDE files
+.vscode
+
+# python virtual environments
+venv/
+*_venv/
+venv_*/

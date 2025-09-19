@@ -1,5 +1,5 @@
 
-add_executable(runUnitTests test_receiver.cpp test_engine.cpp ../src/Receiver.cpp ../src/Engine.cpp ../include/engine_data.pb.cc)
+add_executable(runUnitTests test_main.cpp test_server.cpp test_receiver.cpp test_engine.cpp ../src/Server.cpp ../src/Receiver.cpp ../src/Engine.cpp ../include/engine_data.pb.cc)
 find_package(GTest REQUIRED)
 find_package(Protobuf REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS} ../include ${Protobuf_INCLUDE_DIRS})

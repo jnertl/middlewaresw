@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "Engine.h"
 
+
 TEST(EngineTest, GetRpmReturnsValueInRange) {
     EngineImpl engine;
     int value = engine.getRpm();
@@ -13,4 +14,11 @@ TEST(EngineTest, GetTemperatureReturnsValueInRange) {
     int value = engine.getTemperature();
     EXPECT_GE(value, -50);
     EXPECT_LE(value, 500);
+}
+
+TEST(EngineTest, GetOilPressureReturnsValueInRange) {
+    EngineImpl engine;
+    int value = engine.getOilPressure();
+    EXPECT_GE(value, 0);
+    EXPECT_LE(value, 200);
 }

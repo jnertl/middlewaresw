@@ -24,6 +24,7 @@ PROTOBUF_CONSTEXPR EngineData::EngineData(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.rpm_)*/0
   , /*decltype(_impl_.temperature_)*/0
+  , /*decltype(_impl_.oil_pressure_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct EngineDataDefaultTypeInternal {
   PROTOBUF_CONSTEXPR EngineDataDefaultTypeInternal()
@@ -47,6 +48,7 @@ const uint32_t TableStruct_engine_5fdata_2eproto::offsets[] PROTOBUF_SECTION_VAR
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::EngineData, _impl_.rpm_),
   PROTOBUF_FIELD_OFFSET(::EngineData, _impl_.temperature_),
+  PROTOBUF_FIELD_OFFSET(::EngineData, _impl_.oil_pressure_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::EngineData)},
@@ -57,12 +59,13 @@ static const ::_pb::Message* const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_engine_5fdata_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\021engine_data.proto\".\n\nEngineData\022\013\n\003rpm"
-  "\030\001 \001(\005\022\023\n\013temperature\030\002 \001(\005b\006proto3"
+  "\n\021engine_data.proto\"D\n\nEngineData\022\013\n\003rpm"
+  "\030\001 \001(\005\022\023\n\013temperature\030\002 \001(\005\022\024\n\014oil_press"
+  "ure\030\003 \001(\005b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_engine_5fdata_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_engine_5fdata_2eproto = {
-    false, false, 75, descriptor_table_protodef_engine_5fdata_2eproto,
+    false, false, 97, descriptor_table_protodef_engine_5fdata_2eproto,
     "engine_data.proto",
     &descriptor_table_engine_5fdata_2eproto_once, nullptr, 0, 1,
     schemas, file_default_instances, TableStruct_engine_5fdata_2eproto::offsets,
@@ -94,12 +97,13 @@ EngineData::EngineData(const EngineData& from)
   new (&_impl_) Impl_{
       decltype(_impl_.rpm_){}
     , decltype(_impl_.temperature_){}
+    , decltype(_impl_.oil_pressure_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&_impl_.rpm_, &from._impl_.rpm_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.temperature_) -
-    reinterpret_cast<char*>(&_impl_.rpm_)) + sizeof(_impl_.temperature_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.oil_pressure_) -
+    reinterpret_cast<char*>(&_impl_.rpm_)) + sizeof(_impl_.oil_pressure_));
   // @@protoc_insertion_point(copy_constructor:EngineData)
 }
 
@@ -110,6 +114,7 @@ inline void EngineData::SharedCtor(
   new (&_impl_) Impl_{
       decltype(_impl_.rpm_){0}
     , decltype(_impl_.temperature_){0}
+    , decltype(_impl_.oil_pressure_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -138,8 +143,8 @@ void EngineData::Clear() {
   (void) cached_has_bits;
 
   ::memset(&_impl_.rpm_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.temperature_) -
-      reinterpret_cast<char*>(&_impl_.rpm_)) + sizeof(_impl_.temperature_));
+      reinterpret_cast<char*>(&_impl_.oil_pressure_) -
+      reinterpret_cast<char*>(&_impl_.rpm_)) + sizeof(_impl_.oil_pressure_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -161,6 +166,14 @@ const char* EngineData::_InternalParse(const char* ptr, ::_pbi::ParseContext* ct
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _impl_.temperature_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 oil_pressure = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          _impl_.oil_pressure_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -206,6 +219,12 @@ uint8_t* EngineData::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_temperature(), target);
   }
 
+  // int32 oil_pressure = 3;
+  if (this->_internal_oil_pressure() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(3, this->_internal_oil_pressure(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -232,6 +251,11 @@ size_t EngineData::ByteSizeLong() const {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_temperature());
   }
 
+  // int32 oil_pressure = 3;
+  if (this->_internal_oil_pressure() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_oil_pressure());
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -256,6 +280,9 @@ void EngineData::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PRO
   if (from._internal_temperature() != 0) {
     _this->_internal_set_temperature(from._internal_temperature());
   }
+  if (from._internal_oil_pressure() != 0) {
+    _this->_internal_set_oil_pressure(from._internal_oil_pressure());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -274,8 +301,8 @@ void EngineData::InternalSwap(EngineData* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(EngineData, _impl_.temperature_)
-      + sizeof(EngineData::_impl_.temperature_)
+      PROTOBUF_FIELD_OFFSET(EngineData, _impl_.oil_pressure_)
+      + sizeof(EngineData::_impl_.oil_pressure_)
       - PROTOBUF_FIELD_OFFSET(EngineData, _impl_.rpm_)>(
           reinterpret_cast<char*>(&_impl_.rpm_),
           reinterpret_cast<char*>(&other->_impl_.rpm_));

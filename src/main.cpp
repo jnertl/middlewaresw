@@ -70,15 +70,17 @@ int main(int argc, char* argv[]) {
             while ((valread = read(client_fd, buffer, sizeof(buffer)-1)) > 0) {
                 buffer[valread] = '\0';
                 // On any request, send the latest values as protobuf
-                int rpm, temp;
+                int rpm, temp, oil_pressure;
                 {
                     std::lock_guard<std::mutex> lock(data_mutex);
                     rpm = latest_rpm;
                     temp = latest_temperature;
+                    oil_pressure = engine.getOilPressure();
                 }
                 EngineData msg;
                 msg.set_rpm(rpm);
                 msg.set_temperature(temp);
+                msg.set_oil_pressure(oil_pressure);
                 std::string out;
                 msg.SerializeToString(&out);
                 // Send size prefix (uint32_t, network byte order)
@@ -96,12 +98,13 @@ int main(int argc, char* argv[]) {
     while (true) {
         int rpm = engine.getRpm();
         int temperature = engine.getTemperature();
+        int oil_pressure = engine.getOilPressure();
         {
             std::lock_guard<std::mutex> lock(data_mutex);
             latest_rpm = rpm;
             latest_temperature = temperature;
         }
-        std::cout << "Engine RPM:[" << rpm << "], Temperature:[" << temperature << "]" << std::endl;
+        std::cout << "Engine RPM:[" << rpm << "], Temperature:[" << temperature << "], Oil Pressure:[" << oil_pressure << "] psi" << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(updateIntervalMs));
     }
 

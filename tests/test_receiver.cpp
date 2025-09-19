@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "Receiver.h"
 
+
 TEST(ReceiverTest, GetTemperatureReturnsValueInRange) {
     Receiver receiver;
     for (int i = 0; i < 100; ++i) {
@@ -12,11 +13,20 @@ TEST(ReceiverTest, GetTemperatureReturnsValueInRange) {
 
 TEST(ReceiverTest, GetReturnsValueInRange) {
     Receiver receiver;
-        for (int i = 0; i < 8000; i+=100) {
-            int value = receiver.GetRpm();
-            EXPECT_GE(value, 0);
-            EXPECT_LE(value, 8000);
-        }
+    for (int i = 0; i < 8000; i+=100) {
+        int value = receiver.GetRpm();
+        EXPECT_GE(value, 0);
+        EXPECT_LE(value, 8000);
+    }
+}
+
+TEST(ReceiverTest, GetOilPressureReturnsValueInRange) {
+    Receiver receiver;
+    for (int i = 0; i < 100; ++i) {
+        int value = receiver.GetOilPressure();
+        EXPECT_GE(value, 0);
+        EXPECT_LE(value, 200);
+    }
 }
 
 int main(int argc, char **argv) {

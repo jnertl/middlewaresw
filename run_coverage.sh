@@ -28,6 +28,10 @@ make -j$(nproc)
 # Run tests
 ./test_coverage
 
+# Clean and explude test artifacts from coverage
+echo "Clean test artifacts folder: middlewaresw/tests..."
+find . -type d -path "*/middlewaresw/tests" -exec rm -rf "{}" +
+
 # Capture coverage data
 echo "Capturing coverage..."
 #  --ignore-errors mismatch,mismatch
@@ -35,7 +39,7 @@ lcov --capture --directory . --output-file $COVERAGE_INFO -rc geninfo_unexecuted
 
 # Remove coverage for system and test files
 echo "Filtering coverage..."
-lcov --remove ${COVERAGE_INFO} '/usr/*' '*/test_*' 'engine_data.pb.*' --output-file $COVERAGE_INFO
+lcov --remove ${COVERAGE_INFO} '/usr/*' 'engine_data.pb.*' --output-file $COVERAGE_INFO
 
 # Generate HTML report
 genhtml ${COVERAGE_INFO} --output-directory ../$COVERAGE_HTML_DIR

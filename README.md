@@ -36,6 +36,12 @@ A C++ project demonstrating a periodic console print.
   ./build.sh
   ```
 
+## Unit testing
+- Run unit tests:
+  ```bash
+  ./run_tests.sh
+  ```
+
 ## Run
 
 - Run the main application (builds if needed):
@@ -43,19 +49,14 @@ A C++ project demonstrating a periodic console print.
   ./run_app.sh <UpdateIntervalMs>
   ```
 
-- Run unit tests:
-  ```bash
-  ./run_tests.sh
-  ```
+## Module testing
 
-## Socket Client Example
-
-You can use the provided Python client to connect to the app's socket server (port 5555) and receive live engine data every second:
+You can use the provided Python client to connect to the app's socket server (port 5555) and receive live engine data:
 
 1. **Create and activate a virtual environment:**
    ```bash
-   python3 -m venv venv
-   source venv/bin/activate
+   python3 -m venv test_client_venv
+   source test_client_venv/bin/activate
    ```
 
 2. **Install dependencies:**
@@ -63,10 +64,11 @@ You can use the provided Python client to connect to the app's socket server (po
    pip install protobuf
    ```
 
+3. **Run test client:**
 ```bash
 python3 test_client.py
 ```
-The client will print the latest RPM and temperature values received from the server. You can stop the client with Ctrl+C.
+The client will print the latest values received from the server. You can stop the client with Ctrl+C.
 
 ## Test Coverage for C++
 

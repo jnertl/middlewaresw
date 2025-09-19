@@ -176,6 +176,7 @@ class EngineData final :
   enum : int {
     kRpmFieldNumber = 1,
     kTemperatureFieldNumber = 2,
+    kOilPressureFieldNumber = 3,
   };
   // int32 rpm = 1;
   void clear_rpm();
@@ -195,6 +196,15 @@ class EngineData final :
   void _internal_set_temperature(int32_t value);
   public:
 
+  // int32 oil_pressure = 3;
+  void clear_oil_pressure();
+  int32_t oil_pressure() const;
+  void set_oil_pressure(int32_t value);
+  private:
+  int32_t _internal_oil_pressure() const;
+  void _internal_set_oil_pressure(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:EngineData)
  private:
   class _Internal;
@@ -205,6 +215,7 @@ class EngineData final :
   struct Impl_ {
     int32_t rpm_;
     int32_t temperature_;
+    int32_t oil_pressure_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -259,6 +270,26 @@ inline void EngineData::_internal_set_temperature(int32_t value) {
 inline void EngineData::set_temperature(int32_t value) {
   _internal_set_temperature(value);
   // @@protoc_insertion_point(field_set:EngineData.temperature)
+}
+
+// int32 oil_pressure = 3;
+inline void EngineData::clear_oil_pressure() {
+  _impl_.oil_pressure_ = 0;
+}
+inline int32_t EngineData::_internal_oil_pressure() const {
+  return _impl_.oil_pressure_;
+}
+inline int32_t EngineData::oil_pressure() const {
+  // @@protoc_insertion_point(field_get:EngineData.oil_pressure)
+  return _internal_oil_pressure();
+}
+inline void EngineData::_internal_set_oil_pressure(int32_t value) {
+  
+  _impl_.oil_pressure_ = value;
+}
+inline void EngineData::set_oil_pressure(int32_t value) {
+  _internal_set_oil_pressure(value);
+  // @@protoc_insertion_point(field_set:EngineData.oil_pressure)
 }
 
 #ifdef __GNUC__

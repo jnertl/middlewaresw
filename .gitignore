@@ -42,3 +42,9 @@ build-*
 
 # debug information files
 *.dwo
+
+# Python cache
+__pycache__/
+
+# Test reports
+gtestresults.xml

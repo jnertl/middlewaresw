@@ -1,0 +1,49 @@
+# Project Features and Requirements
+
+## Features
+
+[REQ001]
+C++ application with the following features:
+- Uses CMake for build configuration.
+- Unit tests with GoogleTest (gtest).
+- Code coverage reports with lcov.
+- Follows C++11 standard or later.
+
+[REQ002]
+Application implement Socket server (port 5555):
+- Accepts TCP connections.
+- On request, sends latest engine data as a Protocol Buffers message (with size prefix).
+
+[REQ003]
+Protocol Buffers integration:
+- `engine_data.proto` defines the message format:
+   int32 rpm
+   int32 temperature
+   int32 oil_pressure
+
+[REQ004]
+Engine data simulation:
+ `Receiver` class provides random RPM and temperature values within defined ranges.
+`Engine` interface class with pure virtual methods for RPM and temperature.
+`EngineImpl` class implements `Engine` and uses `Receiver` for data.
+
+## Requirements for testing
+
+[REQ100]
+Debug support:
+- Application periodically prints engine RPM and temperature to the console.
+
+[REQ101]
+Unit tests: test all classes and methods using GoogleTest.
+
+[REQ102]
+Coverage reports: generate code coverage reports using lcov.
+
+## Requirements for environment Setup
+
+- Python 3.7+ and PyQt5 (for client and/or other scripts)
+- GoogleTest (gtest) for C++ unit tests
+- Protocol Buffers (protobuf) C++ library and compiler
+- lcov (for coverage reports)
+- CMake >= 3.10
+- Standard Linux build tools (gcc/g++, make, etc.)

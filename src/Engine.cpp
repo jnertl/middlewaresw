@@ -4,10 +4,15 @@
 
 EngineImpl::EngineImpl() = default;
 
+
 int EngineImpl::getRpm() {
     return receiver.GetRpm();
 }
 
 int EngineImpl::getTemperature() {
     return receiver.GetTemperature();
+}
+
+int EngineImpl::getOilPressure() {
+    return receiver.GetOilPressure();
 }

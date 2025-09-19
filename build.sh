@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-BUILD_DIR="build"
+BUILD_DIR="build_application"
 
 if [ "$1" == "clean" ]; then
     echo "Cleaning build directory..."

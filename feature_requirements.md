@@ -32,6 +32,7 @@
 
 ### [REQ102] Coverage Reports
 - Generate code coverage reports using lcov
+- Coverage reports should reach a minimum threshold (90%)
 
 ## Other Requirements
 
@@ -50,17 +51,13 @@ The engine data model should be easily extensible (e.g., adding new fields to En
 ### [REQ204] Client Compatibility
 The Python client and any other clients must be compatible with the current protobuf message format.
 
-### [REQ205] Test Coverage
-- All new classes and major functions should have corresponding unit tests
-- Coverage reports should reach a minimum threshold (e.g., 80%)
-
-### [REQ206] Build Automation
+### [REQ205] Build Automation
 The build and test scripts should work on a clean environment with minimal manual setup.
 
-### [REQ207] Documentation
+### [REQ206] Documentation
 The README and code should be kept up to date with all features, requirements, and usage instructions.
 
-### [REQ208] Resource Management
+### [REQ207] Resource Management
 All sockets and threads should be properly closed and joined to avoid resource leaks.
 
 ## Requirements for Environment Setup

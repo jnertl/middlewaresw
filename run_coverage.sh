@@ -5,7 +5,10 @@ set -e
 
 COVERAGE_BUILD_DIR=build_coverage
 COVERAGE_INFO=coverage.info
+COVERAGE_SUMMARY=coverage_summary.txt
 COVERAGE_HTML_DIR=coverage_html
+MIN_LINE_COVERAGE_TRESHOLD=70.0
+MIN_FUNTION_COVERAGE_TRESHOLD=85
 
 if [ "$1" == "clean" ]; then
     echo "Cleaning coverage build directory..."
@@ -45,3 +48,33 @@ lcov --remove ${COVERAGE_INFO} '/usr/*' 'engine_data.pb.*' --output-file $COVERA
 genhtml ${COVERAGE_INFO} --output-directory ../$COVERAGE_HTML_DIR
 
 echo "Coverage HTML report generated in $COVERAGE_HTML_DIR/index.html"
+
+echo "**********************************************************************"
+echo "Coverage report summary:"
+echo "**********************************************************************"
+lcov --summary $COVERAGE_INFO > $COVERAGE_SUMMARY
+cat $COVERAGE_SUMMARY
+echo
+echo "line coverage acceptance threshold: $MIN_LINE_COVERAGE_TRESHOLD%"
+lines_covered=$(grep -Po 'lines\.*:\s*\K[0-9]+\.[0-9]+' $COVERAGE_SUMMARY)
+line_coverage_ok=1
+if (( $(echo "$lines_covered < $MIN_LINE_COVERAGE_TRESHOLD" | bc -l) )); then
+    echo "FAILED: Lines coverage ($lines_covered%) is below threshold ($MIN_LINE_COVERAGE_TRESHOLD%)"
+    line_coverage_ok=0
+fi
+echo
+echo "functions coverage acceptance threshold: $MIN_FUNTION_COVERAGE_TRESHOLD%"
+functions_covered=$(grep -Po 'functions\.*:\s*\K[0-9]+\.[0-9]+' $COVERAGE_SUMMARY)
+function_coverage_ok=1
+if (( $(echo "$functions_covered < $MIN_FUNTION_COVERAGE_TRESHOLD" | bc -l) )); then
+    echo "FAILED: Functions coverage ($functions_covered%) is below threshold ($MIN_FUNTION_COVERAGE_TRESHOLD%)"
+    function_coverage_ok=0
+fi
+
+final_status=0
+if [[ $line_coverage_ok -eq 0 || $function_coverage_ok -eq 0 ]]; then
+    final_status=1
+fi
+
+exit $final_status
+echo "**********************************************************************"

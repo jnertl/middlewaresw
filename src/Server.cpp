@@ -7,6 +7,9 @@
 
 Server::Server() : updateIntervalMs(200), latest_rpm(0), latest_temperature(0), latest_oil_pressure(0), running(true) {}
 
+// Mutex to protect shared engine data
+std::mutex data_mutex;
+
 void Server::start(int updateIntervalMs)
 {
     this->updateIntervalMs = updateIntervalMs;
@@ -47,7 +50,7 @@ void Server::run()
     struct sockaddr_in address;
     int opt = 1;
     int addrlen = sizeof(address);
-    const int PORT = 5555;
+    const int PORT = 5554;
 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
     {
@@ -91,16 +94,18 @@ void Server::run()
         while ((valread = read(client_fd, buffer, sizeof(buffer) - 1)) > 0)
         {
             buffer[valread] = '\0';
-            std::lock_guard<std::mutex> lock(data_mutex);
-            EngineData msg;
-            msg.set_rpm(latest_rpm);
-            msg.set_temperature(latest_temperature);
-            msg.set_oil_pressure(latest_oil_pressure);
-            std::string out;
-            msg.SerializeToString(&out);
-            uint32_t size = htonl(static_cast<uint32_t>(out.size()));
-            send(client_fd, &size, sizeof(size), 0);
-            send(client_fd, out.data(), out.size(), 0);
+            {
+                std::lock_guard<std::mutex> lock(data_mutex);
+                EngineData msg;
+                msg.set_rpm(latest_rpm);
+                msg.set_temperature(latest_temperature);
+                msg.set_oil_pressure(latest_oil_pressure);
+                std::string out;
+                msg.SerializeToString(&out);
+                uint32_t size = htonl(static_cast<uint32_t>(out.size()));
+                send(client_fd, &size, sizeof(size), 0);
+                send(client_fd, out.data(), out.size(), 0);
+            }
         }
         std::cout << "Client disconnected." << std::endl;
         close(client_fd);

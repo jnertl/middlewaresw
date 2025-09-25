@@ -4,14 +4,14 @@
 ## Features
 
 ### [REQ001] C++ Application
-- Uses CMake for build configuration
+- Uses CMake version 3 or later for build configuration
 - Follows C++17 standard or later
 
 ### [REQ002] Provide socket interface for clients
 - Provies Socket Server TCP port 5555 for clients
 - On request, sends latest engine data as a Protocol Buffers message (with size prefix)
 
-### [REQ003] Protocol Buffers Integration
+### [REQ003] Application uses Protocol Buffers for serializing structured data
 - `engine_data.proto` defines the message format:
    - `int32 rpm`
    - `int32 temperature`
@@ -24,7 +24,7 @@
 
 ## Requirements for Testing
 
-### [REQ100] Debug Support
+### [REQ100] Main application debugging
 - Main application periodically prints engine RPM, temperature and oil pressure to the console
 
 ### [REQ101] Unit Tests

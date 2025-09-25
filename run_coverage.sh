@@ -55,26 +55,28 @@ echo "**********************************************************************"
 lcov --summary $COVERAGE_INFO > $COVERAGE_SUMMARY
 cat $COVERAGE_SUMMARY
 echo
-echo "line coverage acceptance threshold: $MIN_LINE_COVERAGE_TRESHOLD%"
 lines_covered=$(grep -Po 'lines\.*:\s*\K[0-9]+\.[0-9]+' $COVERAGE_SUMMARY)
 line_coverage_ok=1
 if (( $(echo "$lines_covered < $MIN_LINE_COVERAGE_TRESHOLD" | bc -l) )); then
     echo "FAILED: Lines coverage ($lines_covered%) is below threshold ($MIN_LINE_COVERAGE_TRESHOLD%)"
     line_coverage_ok=0
+else
+    echo "PASSED: Lines coverage ($lines_covered%) meets the threshold ($MIN_LINE_COVERAGE_TRESHOLD%)"
 fi
 echo
-echo "functions coverage acceptance threshold: $MIN_FUNTION_COVERAGE_TRESHOLD%"
 functions_covered=$(grep -Po 'functions\.*:\s*\K[0-9]+\.[0-9]+' $COVERAGE_SUMMARY)
 function_coverage_ok=1
 if (( $(echo "$functions_covered < $MIN_FUNTION_COVERAGE_TRESHOLD" | bc -l) )); then
     echo "FAILED: Functions coverage ($functions_covered%) is below threshold ($MIN_FUNTION_COVERAGE_TRESHOLD%)"
     function_coverage_ok=0
+else
+    echo "PASSED: Functions coverage ($functions_covered%) meets the threshold ($MIN_FUNTION_COVERAGE_TRESHOLD%)"
 fi
 
 final_status=0
 if [[ $line_coverage_ok -eq 0 || $function_coverage_ok -eq 0 ]]; then
     final_status=1
 fi
+echo "**********************************************************************"
 
 exit $final_status
-echo "**********************************************************************"

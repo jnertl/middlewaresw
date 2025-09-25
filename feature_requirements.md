@@ -7,7 +7,7 @@
 - Uses CMake for build configuration
 - Follows C++17 standard or later
 
-### [REQ002] Interface
+### [REQ002] Provide socket interface for clients
 - Provies Socket Server TCP port 5555 for clients
 - On request, sends latest engine data as a Protocol Buffers message (with size prefix)
 
@@ -25,7 +25,7 @@
 ## Requirements for Testing
 
 ### [REQ100] Debug Support
-- Application periodically prints engine RPM, oil pressure and temperature to the console
+- Main application periodically prints engine RPM, temperature and oil pressure to the console
 
 ### [REQ101] Unit Tests
 - Test all classes and methods using GoogleTest

@@ -1,9 +1,17 @@
-#include <iostream>
+ #include <iostream>
 #include <thread>
 #include <chrono>
 #include <cstdlib>
+#include <csignal>
+#include <atomic>
 #include "Server.hpp"
 
+
+std::atomic<bool> running(true);
+
+void handle_sigint(int) {
+    running = false;
+}
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
@@ -19,8 +27,11 @@ int main(int argc, char* argv[]) {
     Server server;
     server.start(updateIntervalMs);
 
+    // Set up signal handler for graceful shutdown
+    std::signal(SIGINT, handle_sigint);
+
     // Main loop
-    while (true) {
+    while (running) {
         // Debug: Fetch and print the latest data from the server
         const int latest_rpm = server.getLatestRpm();
         const int latest_temperature = server.getLatestTemperature();
@@ -29,6 +40,7 @@ int main(int argc, char* argv[]) {
         std::this_thread::sleep_for(std::chrono::milliseconds(updateIntervalMs));
     }
 
+    std::cout << "Shutting down..." << std::endl;
     server.stop();
     return 0;
 }

@@ -66,6 +66,7 @@ message EngineData {
    - A shutdown message must be printed to the console.
 
 ### [REQ202] Error Handling
+- The server must use std::cout to print connection, disconnection, and message send events to the console.
 - All socket and system calls must check for errors and print descriptive error messages to the console, including the function name, error code, and a human-readable description.
 - Recoverable errors (e.g., temporary network failures, client disconnects, resource exhaustion) must be handled by:
    - Logging the error with sufficient detail for debugging.

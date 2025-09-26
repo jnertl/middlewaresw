@@ -5,8 +5,8 @@
 ## Features
 
 ### [REQ001] C++ Application
-- The application must use CMake version 3.28 or newer for build configuration.
-  Use cmake_minimum_required(VERSION 3.28) in makefiles.
+- The application must use CMake version 3.25 or newer for build configuration.
+  Use cmake_minimum_required(VERSION 3.25) in makefiles.
 - The codebase must compile and run with C++20 standard or later. Compilation must succeed with `-std=c++20` or higher.
   Use set(CMAKE_CXX_STANDARD_REQUIRED ON) in makefiles.
 

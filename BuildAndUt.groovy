@@ -22,7 +22,7 @@ pipeline {
                 sh '''
                     cd $git_checkout_root/middlewaresw
                     ./build.sh
-                    zip -r -j middlewaresw.zip build_application/middlewaresw
+                    zip -r -j ${env.WORKSPACE}middlewaresw.zip build_application/middlewaresw
                 '''
             }
         }
@@ -31,6 +31,7 @@ pipeline {
                 sh '''
                     cd $git_checkout_root/middlewaresw
                     bash ./run_tests.sh
+                    cp gtestresults.xml ${env.WORKSPACE}/gtestresults.xml
                 '''
             }
         }
@@ -39,7 +40,7 @@ pipeline {
                 sh '''
                     cd $git_checkout_root/middlewaresw
                     bash ./run_coverage.sh
-                    zip -r coverage_html.zip coverage_html
+                    zip -r ${env.WORKSPACE}/coverage_html.zip coverage_html
                 '''
             }
         }
@@ -47,23 +48,23 @@ pipeline {
     post {
         always {
             archiveArtifacts(
-                artifacts: "${git_checkout_root}/middlewaresw/middlewaresw.zip",
+                artifacts: 'middlewaresw.zip',
                 fingerprint: true,
                 allowEmptyArchive: true
             )
             archiveArtifacts(
-                artifacts: "${git_checkout_root}/middlewaresw/gtestresults.xml",
+                artifacts: 'gtestresults.xml',
                 fingerprint: true,
                 allowEmptyArchive: true
             )
             archiveArtifacts(
-                artifacts: "${git_checkout_root}/middlewaresw/coverage_html.zip",
+                artifacts: 'coverage_html.zip',
                 fingerprint: true,
                 allowEmptyArchive: true
             )
             xunit (
-                thresholds: [ skipped(failureThreshold: '0'), failed(failureThreshold: '0') ],
-                tools: [ GoogleTest(pattern: "${git_checkout_root}/middlewaresw/gtestresults.xml") ]
+                thresholds: [ skipped(), failed(failureThreshold: '0') ],
+                tools: [ GoogleTest(pattern: "middlewaresw/gtestresults.xml") ]
             )
         }
     }

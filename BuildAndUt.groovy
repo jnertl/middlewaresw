@@ -41,6 +41,7 @@ pipeline {
                     cd $git_checkout_root/middlewaresw
                     bash ./run_coverage.sh
                     zip -r $WORKSPACE/coverage_html.zip coverage_html
+                    cp -r coverage_html $WORKSPACE/coverage_html
                 '''
             }
         }
@@ -62,10 +63,20 @@ pipeline {
                 fingerprint: true,
                 allowEmptyArchive: true
             )
-            xunit (
+            xunit(
                 thresholds: [ skipped(), failed(failureThreshold: '0') ],
                 tools: [ GoogleTest(pattern: 'gtestresults.xml') ]
             )
+        }
+        success {
+            publishHTML(target: [
+                reportName: 'Coverage Report',
+                reportDir: 'coverage_html',
+                reportFiles: 'index.html',
+                keepAll: true,
+                alwaysLinkToLastBuild: true,
+                allowMissing: false
+            ])
         }
     }
 }

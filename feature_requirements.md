@@ -5,7 +5,7 @@
 ## Features
 
 ### [REQ001] C++ Application
-- The application must use CMake for build configuration.
+- The application must use CMake version 3.10 or newer for build configuration.
 - The codebase must compile and run with C++17 standard or later. Compilation must succeed with `-std=c++17` or higher.
 
 ### [REQ002] TCP Socket Server Interface
@@ -15,10 +15,18 @@
 - The server must log connection, disconnection, and message send events to the console.
 
 ### [REQ003] Protocol Buffers Integration
-- The file `engine_data.proto` must define a message with the following fields:
-   - `int32 rpm` (engine revolutions per minute)
-   - `int32 temperature` (engine temperature in degrees Celsius)
-   - `int32 oil_pressure` (oil pressure in psi)
+- The file `engine_data.proto` must use Protocol Buffers syntax version 3 and define the following message:
+
+```proto
+syntax = "proto3";
+
+message EngineData {
+   int32 rpm = 1;           // Engine revolutions per minute
+   int32 temperature = 2;   // Engine temperature in degrees Celsius
+   int32 oil_pressure = 3;  // Oil pressure in psi
+}
+```
+
 - The generated C++ classes from this proto file must be used for all engine data serialization and deserialization.
 
 ### [REQ004] Engine Data Simulation
@@ -29,8 +37,12 @@
 ## Testing Requirements
 
 ### [REQ100] Debug Output
-- The application must print the current engine RPM, oil pressure, and temperature to the console at least once every 200 milliseconds during normal operation.
-- Output format must be: `Engine RPM:[<rpm>], Temperature:[<temperature>], Oil Pressure:[<oil_pressure>] psi`
+- The application must print the current engine RPM, oil pressure, and temperature to the standard output (console) at least once every 200 milliseconds during normal operation.
+- The output string must exactly match:
+   `Engine RPM:[<rpm>], Temperature:[<temperature>], Oil Pressure:[<oil_pressure>] psi`
+   where `<rpm>`, `<temperature>`, and `<oil_pressure>` are integer values representing the latest engine data.
+- Each output line must be printed on a new line, with no extra whitespace before or after the string.
+- The output must be visible in the terminal when running the application interactively.
 
 ### [REQ101] Unit Tests
 - All public classes and methods must have corresponding unit tests implemented using GoogleTest.
@@ -54,19 +66,39 @@
    - A shutdown message must be printed to the console.
 
 ### [REQ202] Error Handling
-- All socket and system calls must check for errors and print descriptive error messages to the console.
-- The application must not crash on recoverable errors; it must log and continue or exit gracefully.
+- All socket and system calls must check for errors and print descriptive error messages to the console, including the function name, error code, and a human-readable description.
+- Recoverable errors (e.g., temporary network failures, client disconnects, resource exhaustion) must be handled by:
+   - Logging the error with sufficient detail for debugging.
+   - Attempting to retry the operation if appropriate (e.g., transient network errors).
+   - Cleaning up resources (e.g., closing sockets, releasing memory) before continuing.
+   - Notifying the user or administrator if the error affects application functionality.
+- The application must not crash or terminate unexpectedly on recoverable errors; it must log the error and either continue operation or exit gracefully with a clear message.
+- Example recoverable error handling:
+   - If a client disconnects unexpectedly, log the event and continue accepting new clients.
+   - If a socket read/write fails due to a transient error, log the error and retry up to a defined limit before giving up.
+   - If memory allocation fails, log the error and attempt to free unused resources before retrying or exiting gracefully.
 
 ### [REQ203] Extensible Data Model
 - The engine data model must allow new fields to be added to `engine_data.proto` and corresponding C++ code with minimal changes (no breaking changes for existing clients).
 
 ### [REQ204] Client Compatibility
 - The Python client and any other clients must be able to parse the current Protocol Buffers message format and receive engine data from the server without errors.
-- Any changes to the message format must be reflected in the client code and documented in the README.
+- Any changes to the Protocol Buffers message format (e.g., adding, removing, or renaming fields in `engine_data.proto`) must be:
+   - Documented in the README file, including the new message definition and field descriptions.
+   - Reflected in all client code (Python and others) to ensure compatibility.
+   - Noted in the project changelog or release notes, if applicable.
 
 ### [REQ205] Test Coverage
-- All new classes and major functions must have corresponding unit tests.
-- Coverage reports must reach at least 80% line coverage for all major classes and functions.
+- All new classes and major functions must have corresponding unit tests implemented using GoogleTest.
+- Unit tests must cover:
+   - All public methods and constructors
+   - Typical usage scenarios
+   - Edge cases and error conditions
+- Use assertions to verify correct behavior, output, and error handling.
+- Coverage reports must reach at least 80% line coverage for all major classes and functions, as measured by lcov.
+- Coverage measurement must exclude test code and focus on application logic.
+- If coverage falls below the threshold, add additional tests to cover untested branches, conditions, and error paths.
+- Coverage reports must be generated after each major change and included in project documentation or CI reports.
 
 ### [REQ206] Build Automation
 - The build and test scripts must work on a clean Linux environment with no manual setup except installing required dependencies.

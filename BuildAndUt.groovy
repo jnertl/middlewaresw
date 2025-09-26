@@ -59,6 +59,8 @@ pipeline {
     }
     post {
         failure {
+        }
+        always {
             sh '''
                 echo 'Build failed. Executing failure handler...'
                 git clone --single-branch --branch main https://github.com/jnertl/mcpdemo.git
@@ -78,8 +80,7 @@ pipeline {
                 script user_prompts/analyse_failed_jenkins_job.sh \
                 >&1 | tee failure_analysis.txt
             '''
-        }
-        always {
+
             archiveArtifacts(
                 artifacts: 'middlewaresw.zip',
                 fingerprint: true,
@@ -100,12 +101,12 @@ pipeline {
                 fingerprint: true,
                 allowEmptyArchive: true
             )
+        }
+        success {
             xunit(
                 thresholds: [ skipped(), failed(failureThreshold: '0') ],
                 tools: [ GoogleTest(pattern: 'gtestresults.xml') ]
             )
-        }
-        success {
             publishHTML(target: [
                 reportName: 'Coverage Report',
                 reportDir: 'coverage_html',

@@ -1,3 +1,9 @@
+cmake_minimum_required(VERSION 3.28)
+project(middlewaresw)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(runUnitTests test_main.cpp test_server.cpp test_receiver.cpp test_engine.cpp ../src/Server.cpp ../src/Receiver.cpp ../src/Engine.cpp ../include/engine_data.pb.cc)
 find_package(GTest REQUIRED)

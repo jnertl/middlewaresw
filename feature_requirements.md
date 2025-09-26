@@ -5,8 +5,8 @@
 ## Features
 
 ### [REQ001] C++ Application
-- The application must use CMake version 3.10 or newer for build configuration.
-- The codebase must compile and run with C++17 standard or later. Compilation must succeed with `-std=c++17` or higher.
+- The application must use CMake version 3.28 or newer for build configuration.
+- The codebase must compile and run with C++20 standard or later. Compilation must succeed with `-std=c++20` or higher.
 
 ### [REQ002] TCP Socket Server Interface
 - The application must provide a TCP socket server listening on port 5555 (IPv4, INADDR_ANY).

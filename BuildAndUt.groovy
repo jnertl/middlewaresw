@@ -17,6 +17,17 @@ pipeline {
                 '''
             }
         }
+        stage('Cleanup workspace') {
+            steps {
+                sh '''
+                    rm -fr gtestresults.xml || true
+                    rm -fr coverage_html || true
+                    rm -fr failure_analysis.txt || true
+                    rm -fr middlewaresw.zip || true
+                    rm -fr coverage_html.zip || true
+                '''
+            }
+        }
         stage('Build binaries') {
             steps {
                 sh '''

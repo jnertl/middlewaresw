@@ -22,7 +22,7 @@ pipeline {
                 sh '''
                     cd $git_checkout_root/middlewaresw
                     ./build.sh
-                    zip -r -j ${env.WORKSPACE}middlewaresw.zip build_application/middlewaresw
+                    zip -r -j ${env.WORKSPACE}/middlewaresw.zip build_application/middlewaresw
                 '''
             }
         }

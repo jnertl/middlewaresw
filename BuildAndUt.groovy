@@ -46,9 +46,9 @@ pipeline {
     }
     post {
         always {
-            archiveArtifacts artifacts: "${env.git_checkout_root}/middlewaresw/middlewaresw.zip", fingerprint: true
-            archiveArtifacts artifacts: "${env.git_checkout_root}/middlewaresw/gtestresults.xml", fingerprint: true
-            archiveArtifacts artifacts: "${env.git_checkout_root}/middlewaresw/coverage_html.zip", fingerprint: true
+            archiveArtifacts artifacts: "${env.git_checkout_root}/middlewaresw/middlewaresw.zip", fingerprint: true, allowEmptyArchive: true
+            archiveArtifacts artifacts: "${env.git_checkout_root}/middlewaresw/gtestresults.xml", fingerprint: true, allowEmptyArchive: true
+            archiveArtifacts artifacts: "${env.git_checkout_root}/middlewaresw/coverage_html.zip", fingerprint: true, allowEmptyArchive: true
             xunit (
                 thresholds: [ skipped(failureThreshold: '0'), failed(failureThreshold: '0') ],
                 tools: [ GoogleTest(pattern: '${git_checkout_root}/middlewaresw/gtestresults.xml') ]

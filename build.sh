@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 BUILD_DIR="build_application"
 
@@ -17,6 +16,14 @@ fi
 cd "$BUILD_DIR"
 echo "Running CMake..."
 cmake ..
+if [ $? -ne 0 ]; then
+    echo "CMake configuration failed."
+    exit 1
+fi
 echo "Building project..."
 make -j$(nproc)
+if [ $? -ne 0 ]; then
+    echo "Build failed."
+    exit 2
+fi
 echo "Build complete."

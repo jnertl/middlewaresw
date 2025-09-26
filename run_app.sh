@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 if [ ! -f build_application/middlewaresw ]; then
     echo "Executable build/middlewaresw not found. Building project..."

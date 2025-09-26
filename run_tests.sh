@@ -1,7 +1,8 @@
 #!/bin/bash
-set -e
 
 ./build.sh
+
+rm gtestresults.xml || true
 
 ./build_application/tests/runUnitTests --gtest_output=xml:gtestresults.xml > /dev/null 2>&1
 if [ -f gtestresults.xml ]; then

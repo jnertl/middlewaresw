@@ -1,8 +1,6 @@
 #!/bin/bash
 # run_coverage.sh: Build with coverage flags, run tests, and generate a coverage report for C++ code
 
-set -e
-
 COVERAGE_BUILD_DIR=build_coverage
 COVERAGE_INFO=coverage.info
 COVERAGE_SUMMARY=coverage_summary.txt

@@ -58,8 +58,6 @@ pipeline {
         }
     }
     post {
-        failure {
-        }
         always {
             sh '''
                 echo 'Build failed. Executing failure handler...'

@@ -47,7 +47,7 @@ pipeline {
         }
     }
     post {
-        failed {
+        failure {
             sh '''
                 echo 'Build failed. Executing failure handler...'
                 git clone --single-branch --branch main https://github.com/jnertl/mcpdemo.git

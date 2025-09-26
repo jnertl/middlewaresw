@@ -48,6 +48,27 @@ pipeline {
     }
     post {
         always {
+            sh '''
+                echo 'Build failed. Executing failure handler...'
+                git clone --single-branch --branch main https://github.com/jnertl/mcpdemo.git
+                cd mcpdemo
+                git --no-pager show --summary
+                export SOURCE_DIR="$git_checkout_root/middlewaresw"
+                export REQUIREMENTS_FILE="$SOURCE_DIR/feature_requirements.md"
+                export CONTEXT_FILE="$SOURCE_DIR/src_context.txt"
+                ./create_context.sh
+                export JENKINS_JOB_LOG="$(jenkins-manager get-log $JOB_NAME $BUILD_NUMBER)"
+
+                ./ongoing_printer.sh \
+                /usr/local/bin/mcphost \
+                --temperature 0.1 --top-p 0.8 --top-k 50 --max-tokens 4096 \
+                --quiet --stream=false \
+                --system-prompt ./system_prompts/jenkins_results_assistant.txt \
+                script user_prompts/analyse_failed_jenkins_job.sh \
+                >&1 | tee failure_analysis.txt
+            '''
+        }
+        always {
             archiveArtifacts(
                 artifacts: 'middlewaresw.zip',
                 fingerprint: true,
@@ -60,6 +81,11 @@ pipeline {
             )
             archiveArtifacts(
                 artifacts: 'coverage_html.zip',
+                fingerprint: true,
+                allowEmptyArchive: true
+            )
+            archiveArtifacts(
+                artifacts: 'failure_analysis.txt',
                 fingerprint: true,
                 allowEmptyArchive: true
             )

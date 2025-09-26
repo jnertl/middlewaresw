@@ -68,7 +68,7 @@ pipeline {
                 export REQUIREMENTS_FILE="$SOURCE_DIR/feature_requirements.md"
                 export CONTEXT_FILE="$SOURCE_DIR/src_context.txt"
                 ./create_context.sh
-                export GTEST_JOB_LOG=$WORKSPACE/gtestresults.xml
+                export GTEST_JOB_LOG="$(cat $WORKSPACE/gtestresults.xml)"
 
                 ./ongoing_printer.sh \
                 /usr/local/bin/mcphost \

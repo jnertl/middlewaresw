@@ -22,7 +22,7 @@ pipeline {
                 sh '''
                     cd $git_checkout_root/middlewaresw
                     ./build.sh
-                    zip -r -j ${env.WORKSPACE}/middlewaresw.zip build_application/middlewaresw
+                    zip -r -j $WORKSPACE/middlewaresw.zip build_application/middlewaresw
                 '''
             }
         }
@@ -31,7 +31,7 @@ pipeline {
                 sh '''
                     cd $git_checkout_root/middlewaresw
                     bash ./run_tests.sh
-                    cp gtestresults.xml ${env.WORKSPACE}/gtestresults.xml
+                    cp gtestresults.xml $WORKSPACE/gtestresults.xml
                 '''
             }
         }
@@ -40,7 +40,7 @@ pipeline {
                 sh '''
                     cd $git_checkout_root/middlewaresw
                     bash ./run_coverage.sh
-                    zip -r ${env.WORKSPACE}/coverage_html.zip coverage_html
+                    zip -r $WORKSPACE/coverage_html.zip coverage_html
                 '''
             }
         }

@@ -64,7 +64,7 @@ pipeline {
             )
             xunit (
                 thresholds: [ skipped(), failed(failureThreshold: '0') ],
-                tools: [ GoogleTest(pattern: "middlewaresw/gtestresults.xml") ]
+                tools: [ GoogleTest(pattern: 'gtestresults.xml') ]
             )
         }
     }

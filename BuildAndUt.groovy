@@ -57,7 +57,7 @@ pipeline {
                 export REQUIREMENTS_FILE="$SOURCE_DIR/feature_requirements.md"
                 export CONTEXT_FILE="$SOURCE_DIR/src_context.txt"
                 ./create_context.sh
-                export JENKINS_JOB_LOG="$(jenkins-manager get-log $JOB_NAME $BUILD_NUMBER)"
+                export GTEST_JOB_LOG=$WORKSPACE/gtestresults.xml
 
                 ./ongoing_printer.sh \
                 /usr/local/bin/mcphost \

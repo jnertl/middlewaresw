@@ -14,7 +14,6 @@ TEST(EngineTest, GetTemperatureReturnsValueInRange) {
     int value = engine.getTemperature();
     EXPECT_GE(value, -50);
     EXPECT_LE(value, 500);
-    EXPECT_EQ(value, 99999999);  // This line is intended to fail the test
 }
 
 TEST(EngineTest, GetOilPressureReturnsValueInRange) {

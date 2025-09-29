@@ -7,10 +7,10 @@ pipeline {
         stage('Checkout') {
             steps {
                 sh '''
-                    echo $PWD
-                    rm -fr '$git_checkout_root' || true
-                    mkdir -p '$git_checkout_root'
-                    cd '$git_checkout_root'
+                    echo "Git checkout root:${git_checkout_root}"
+                    rm -fr "${git_checkout_root}" || true
+                    mkdir -p "${git_checkout_root}"
+                    cd "${git_checkout_root}"
                     git clone --single-branch --branch main https://github.com/jnertl/middlewaresw.git
                     echo "middlewaresw"
                     git --no-pager -C middlewaresw/ show --summary
@@ -31,7 +31,7 @@ pipeline {
         stage('Build binaries') {
             steps {
                 sh '''
-                    cd '$git_checkout_root/middlewaresw'
+                    cd "${git_checkout_root}/middlewaresw"
                     ./build.sh
                 '''
             }
@@ -39,7 +39,7 @@ pipeline {
         stage('Run unit tests') {
             steps {
                 sh '''
-                    cd '$git_checkout_root/middlewaresw'
+                    cd "${git_checkout_root}/middlewaresw"
                     # Modify the test to check for the new RPM value that will fail the test
                     sed -i '/EXPECT_LE(value, 8000);/a EXPECT_EQ(value, 9999);' tests/test_engine.cpp
                     bash ./run_tests.sh
@@ -49,7 +49,7 @@ pipeline {
         stage('Coverage report') {
             steps {
                 sh '''
-                    cd '$git_checkout_root/middlewaresw'
+                    cd "${git_checkout_root}/middlewaresw"
                     bash ./run_coverage.sh
                 '''
             }
@@ -75,7 +75,7 @@ pipeline {
                 export CONTEXT_FILE="$SOURCE_DIR/src_context.txt"
                 ./create_context.sh
 
-                export GTEST_JOB_LOG="$(cat '$git_checkout_root/middlewaresw/gtestresults.xml')"
+                export GTEST_JOB_LOG=$(cat "${git_checkout_root}/middlewaresw/gtestresults.xml")
 
                 ./ongoing_printer.sh \
                 /usr/local/bin/mcphost \

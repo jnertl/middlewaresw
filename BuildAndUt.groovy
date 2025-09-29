@@ -61,6 +61,8 @@ pipeline {
         always {
             sh '''
                 echo 'Build failed. Executing failure handler...'
+                export GTEST_JOB_LOG="$(cat gtestresults.xml)"
+                echo "GTEST_JOB_LOG=$GTEST_JOB_LOG"
                 rm -fr mcpdemo || true
                 git clone --single-branch --branch main https://github.com/jnertl/mcpdemo.git
                 cd mcpdemo
@@ -69,7 +71,6 @@ pipeline {
                 export REQUIREMENTS_FILE="$SOURCE_DIR/feature_requirements.md"
                 export CONTEXT_FILE="$SOURCE_DIR/src_context.txt"
                 ./create_context.sh
-                export GTEST_JOB_LOG="$(cat $WORKSPACE/gtestresults.xml)"
 
                 ./ongoing_printer.sh \
                 /usr/local/bin/mcphost \

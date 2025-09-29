@@ -83,7 +83,7 @@ pipeline {
                 --quiet --stream=false \
                 --system-prompt ./system_prompts/jenkins_results_assistant.txt \
                 script user_prompts/analyse_failed_jenkins_job.sh \
-                >&1 | tee failure_analysis.txt
+                >&1 | tee $WORKSPACE/failure_analysis.txt
             '''
 
             archiveArtifacts(

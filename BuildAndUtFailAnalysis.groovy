@@ -58,10 +58,10 @@ pipeline {
     post {
         always {
             sh '''
-                zip -r -j '$WORKSPACE/middlewaresw.zip' '$git_checkout_root/middlewaresw/build_application/middlewaresw' || true
-                cp '$git_checkout_root/middlewaresw/gtestresults.xml' '$WORKSPACE/' || true
-                cp -r '$git_checkout_root/middlewaresw/coverage_html' '$WORKSPACE/' || true
-                zip -r -j '$WORKSPACE/coverage_html.zip' '$WORKSPACE/coverage_html' || true
+                zip -r -j '${WORKSPACE}/middlewaresw.zip' '$git_checkout_root/middlewaresw/build_application/middlewaresw' || true
+                cp '$git_checkout_root/middlewaresw/gtestresults.xml' '${WORKSPACE}/' || true
+                cp -r '$git_checkout_root/middlewaresw/coverage_html' '${WORKSPACE}/' || true
+                zip -r -j '${WORKSPACE}/coverage_html.zip' '${WORKSPACE}/coverage_html' || true
             '''
 
             sh '''

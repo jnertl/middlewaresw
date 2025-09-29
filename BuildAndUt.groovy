@@ -42,18 +42,19 @@ pipeline {
                 sh '''
                     cd $git_checkout_root/middlewaresw
                     bash ./run_tests.sh
-                    cp gtestresults.xml $WORKSPACE/gtestresults.xml
                 '''
             }
         }
         stage('Coverage report') {
-            steps {
-                sh '''
-                    cd $git_checkout_root/middlewaresw
-                    bash ./run_coverage.sh
-                    zip -r $WORKSPACE/coverage_html.zip coverage_html
-                    cp -r coverage_html $WORKSPACE/coverage_html
-                '''
+            always {
+                steps {
+                    sh '''
+                        cd $git_checkout_root/middlewaresw
+                        bash ./run_coverage.sh
+                        zip -r $WORKSPACE/coverage_html.zip coverage_html
+                        cp -r coverage_html $WORKSPACE/coverage_html
+                    '''
+                }
             }
         }
     }
@@ -61,7 +62,6 @@ pipeline {
         always {
             sh '''
                 echo 'Build failed. Executing failure handler...'
-                export GTEST_JOB_LOG="$(cat gtestresults.xml)"
                 echo "GTEST_JOB_LOG=$GTEST_JOB_LOG"
                 rm -fr mcpdemo || true
                 git clone --single-branch --branch main https://github.com/jnertl/mcpdemo.git
@@ -71,6 +71,7 @@ pipeline {
                 export REQUIREMENTS_FILE="$SOURCE_DIR/feature_requirements.md"
                 export CONTEXT_FILE="$SOURCE_DIR/src_context.txt"
                 ./create_context.sh
+                export GTEST_JOB_LOG="$(cat $git_checkout_root/middlewaresw/gtestresults.xml)"
 
                 ./ongoing_printer.sh \
                 /usr/local/bin/mcphost \

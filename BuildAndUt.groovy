@@ -74,12 +74,12 @@ pipeline {
                 fingerprint: true,
                 allowEmptyArchive: true
             )
-        }
-        success {
             xunit(
                 thresholds: [ skipped(), failed(failureThreshold: '0') ],
                 tools: [ GoogleTest(pattern: 'gtestresults.xml') ]
             )
+        }
+        success {
             publishHTML(target: [
                 reportName: 'Coverage Report',
                 reportDir: 'coverage_html',

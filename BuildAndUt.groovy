@@ -31,9 +31,10 @@ pipeline {
         stage('Build binaries') {
             steps {
                 sh '''
+                    CURRENT_DIR=$PWD
                     cd $git_checkout_root/middlewaresw
                     ./build.sh
-                    zip -r -j $WORKSPACE/middlewaresw.zip build_application/middlewaresw
+                    zip -r -j $CURRENT_DIR/middlewaresw.zip build_application/middlewaresw
                 '''
             }
         }
@@ -48,10 +49,10 @@ pipeline {
         stage('Coverage report') {
             steps {
                 sh '''
+                    CURRENT_DIR=$PWD
                     cd $git_checkout_root/middlewaresw
                     bash ./run_coverage.sh
-                    zip -r $WORKSPACE/coverage_html.zip coverage_html
-                    cp -r coverage_html $WORKSPACE/coverage_html
+                    zip -r $CURRENT_DIR/coverage_html.zip coverage_html
                 '''
             }
         }
@@ -70,11 +71,6 @@ pipeline {
             )
             archiveArtifacts(
                 artifacts: 'coverage_html.zip',
-                fingerprint: true,
-                allowEmptyArchive: true
-            )
-            archiveArtifacts(
-                artifacts: 'failure_analysis.txt',
                 fingerprint: true,
                 allowEmptyArchive: true
             )

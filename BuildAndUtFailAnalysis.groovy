@@ -41,6 +41,8 @@ pipeline {
             steps {
                 sh '''
                     cd $git_checkout_root/middlewaresw
+                    # Modify the test to check for the new RPM value that will fail the test
+                    sed -i '/EXPECT_LE(value, 8000);/a EXPECT_EQ(value, 9999);' tests/test_engine.cpp
                     bash ./run_tests.sh
                     cp gtestresults.xml $WORKSPACE/gtestresults.xml
                 '''

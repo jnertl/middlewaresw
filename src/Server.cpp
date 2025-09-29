@@ -50,7 +50,7 @@ void Server::run()
     struct sockaddr_in address;
     int opt = 1;
     int addrlen = sizeof(address);
-    const int PORT = 5554;
+    const int PORT = 5555;
 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
     {

@@ -61,6 +61,7 @@ pipeline {
         always {
             sh '''
                 echo 'Build failed. Executing failure handler...'
+                rm -fr mcpdemo || true
                 git clone --single-branch --branch main https://github.com/jnertl/mcpdemo.git
                 cd mcpdemo
                 git --no-pager show --summary

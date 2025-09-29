@@ -20,21 +20,20 @@ pipeline {
         stage('Cleanup workspace') {
             steps {
                 sh '''
-                    rm -fr gtestresults.xml || true
-                    rm -fr coverage_html || true
-                    rm -fr failure_analysis.txt || true
-                    rm -fr middlewaresw.zip || true
-                    rm -fr coverage_html.zip || true
+                    rm -fr $WORKSPACE/gtestresults.xml || true
+                    rm -fr $WORKSPACE/coverage_html || true
+                    rm -fr $WORKSPACE/failure_analysis.txt || true
+                    rm -fr $WORKSPACE/middlewaresw.zip || true
+                    rm -fr $WORKSPACE/coverage_html.zip || true
                 '''
             }
         }
         stage('Build binaries') {
             steps {
                 sh '''
-                    CURRENT_DIR=$PWD
                     cd $git_checkout_root/middlewaresw
                     ./build.sh
-                    zip -r -j $CURRENT_DIR/middlewaresw.zip build_application/middlewaresw
+                    zip -r -j $WORKSPACE/middlewaresw.zip build_application/middlewaresw
                 '''
             }
         }
@@ -43,16 +42,17 @@ pipeline {
                 sh '''
                     cd $git_checkout_root/middlewaresw
                     bash ./run_tests.sh
+                    cp gtestresults.xml $WORKSPACE/gtestresults.xml
                 '''
             }
         }
         stage('Coverage report') {
             steps {
                 sh '''
-                    CURRENT_DIR=$PWD
                     cd $git_checkout_root/middlewaresw
                     bash ./run_coverage.sh
-                    zip -r $CURRENT_DIR/coverage_html.zip coverage_html
+                    zip -r $WORKSPACE/coverage_html.zip coverage_html
+                    cp -r coverage_html $WORKSPACE/coverage_html
                 '''
             }
         }

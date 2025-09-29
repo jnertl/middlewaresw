@@ -46,15 +46,13 @@ pipeline {
             }
         }
         stage('Coverage report') {
-            always {
-                steps {
-                    sh '''
-                        cd $git_checkout_root/middlewaresw
-                        bash ./run_coverage.sh
-                        zip -r $WORKSPACE/coverage_html.zip coverage_html
-                        cp -r coverage_html $WORKSPACE/coverage_html
-                    '''
-                }
+            steps {
+                sh '''
+                    cd $git_checkout_root/middlewaresw
+                    bash ./run_coverage.sh
+                    zip -r $WORKSPACE/coverage_html.zip coverage_html
+                    cp -r coverage_html $WORKSPACE/coverage_html
+                '''
             }
         }
     }

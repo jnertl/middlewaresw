@@ -87,6 +87,16 @@ pipeline {
             '''
 
             archiveArtifacts(
+                artifacts: 'mcpdemo/system_prompts/jenkins_results_assistant.txt',
+                fingerprint: true,
+                allowEmptyArchive: true
+            )
+            archiveArtifacts(
+                artifacts: 'mcpdemo/user_prompts/analyse_failed_jenkins_job.sh',
+                fingerprint: true,
+                allowEmptyArchive: true
+            )
+            archiveArtifacts(
                 artifacts: 'middlewaresw.zip',
                 fingerprint: true,
                 allowEmptyArchive: true

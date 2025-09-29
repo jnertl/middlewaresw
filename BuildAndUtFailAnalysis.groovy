@@ -33,7 +33,6 @@ pipeline {
                 sh '''
                     cd $git_checkout_root/middlewaresw
                     ./build.sh
-                    zip -r -j $WORKSPACE/middlewaresw.zip build_application/middlewaresw
                 '''
             }
         }
@@ -44,7 +43,6 @@ pipeline {
                     # Modify the test to check for the new RPM value that will fail the test
                     sed -i '/EXPECT_LE(value, 8000);/a EXPECT_EQ(value, 9999);' tests/test_engine.cpp
                     bash ./run_tests.sh
-                    cp gtestresults.xml $WORKSPACE/gtestresults.xml
                 '''
             }
         }
@@ -53,14 +51,19 @@ pipeline {
                 sh '''
                     cd $git_checkout_root/middlewaresw
                     bash ./run_coverage.sh
-                    zip -r $WORKSPACE/coverage_html.zip coverage_html
-                    cp -r coverage_html $WORKSPACE/coverage_html
                 '''
             }
         }
     }
     post {
         always {
+            sh '''
+                zip -r -j $WORKSPACE/middlewaresw.zip $git_checkout_root/middlewaresw/build_application/middlewaresw
+                cp $git_checkout_root/middlewaresw/gtestresults.xml $WORKSPACE/ || true
+                cp -r $git_checkout_root/middlewaresw/coverage_html $WORKSPACE/ || true
+                zip -r $WORKSPACE/coverage_html.zip $WORKSPACE/coverage_html
+            '''
+
             sh '''
                 echo 'Build failed. Executing failure handler...'
                 rm -fr mcpdemo || true
@@ -71,6 +74,7 @@ pipeline {
                 export REQUIREMENTS_FILE="$SOURCE_DIR/feature_requirements.md"
                 export CONTEXT_FILE="$SOURCE_DIR/src_context.txt"
                 ./create_context.sh
+
                 export GTEST_JOB_LOG="$(cat $git_checkout_root/middlewaresw/gtestresults.xml)"
 
                 ./ongoing_printer.sh \
@@ -102,12 +106,12 @@ pipeline {
                 fingerprint: true,
                 allowEmptyArchive: true
             )
-        }
-        success {
             xunit(
                 thresholds: [ skipped(), failed(failureThreshold: '0') ],
                 tools: [ GoogleTest(pattern: 'gtestresults.xml') ]
             )
+        }
+        success {
             publishHTML(target: [
                 reportName: 'Coverage Report',
                 reportDir: 'coverage_html',

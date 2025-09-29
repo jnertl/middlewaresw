@@ -8,9 +8,9 @@ pipeline {
             steps {
                 sh '''
                     echo $PWD
-                    rm -fr $git_checkout_root || true
-                    mkdir -p $git_checkout_root
-                    cd $git_checkout_root
+                    rm -fr '$git_checkout_root' || true
+                    mkdir -p '$git_checkout_root'
+                    cd '$git_checkout_root'
                     git clone --single-branch --branch main https://github.com/jnertl/middlewaresw.git
                     echo "middlewaresw"
                     git --no-pager -C middlewaresw/ show --summary
@@ -20,45 +20,48 @@ pipeline {
         stage('Cleanup workspace') {
             steps {
                 sh '''
-                    rm -fr $WORKSPACE/gtestresults.xml || true
-                    rm -fr $WORKSPACE/coverage_html || true
-                    rm -fr $WORKSPACE/failure_analysis.txt || true
-                    rm -fr $WORKSPACE/middlewaresw.zip || true
-                    rm -fr $WORKSPACE/coverage_html.zip || true
+                    rm -fr '$WORKSPACE/gtestresults.xml' || true
+                    rm -fr '$WORKSPACE/coverage_html' || true
+                    rm -fr '$WORKSPACE/failure_analysis.txt' || true
+                    rm -fr '$WORKSPACE/middlewaresw.zip' || true
+                    rm -fr '$WORKSPACE/coverage_html.zip' || true
                 '''
             }
         }
         stage('Build binaries') {
             steps {
                 sh '''
-                    cd $git_checkout_root/middlewaresw
+                    cd '$git_checkout_root/middlewaresw'
                     ./build.sh
-                    zip -r -j $WORKSPACE/middlewaresw.zip build_application/middlewaresw
                 '''
             }
         }
         stage('Run unit tests') {
             steps {
                 sh '''
-                    cd $git_checkout_root/middlewaresw
+                    cd '$git_checkout_root/middlewaresw'
                     bash ./run_tests.sh
-                    cp gtestresults.xml $WORKSPACE/gtestresults.xml
                 '''
             }
         }
         stage('Coverage report') {
             steps {
                 sh '''
-                    cd $git_checkout_root/middlewaresw
+                    cd '$git_checkout_root/middlewaresw'
                     bash ./run_coverage.sh
-                    zip -r $WORKSPACE/coverage_html.zip coverage_html
-                    cp -r coverage_html $WORKSPACE/coverage_html
                 '''
             }
         }
     }
     post {
         always {
+            sh '''
+                zip -r -j '$WORKSPACE/middlewaresw.zip' '$git_checkout_root/middlewaresw/build_application/middlewaresw' || true
+                cp '$git_checkout_root/middlewaresw/gtestresults.xml' '$WORKSPACE/' || true
+                cp -r '$git_checkout_root/middlewaresw/coverage_html' '$WORKSPACE/' || true
+                zip -r -j '$WORKSPACE/coverage_html.zip' '$WORKSPACE/coverage_html' || true
+            '''
+
             archiveArtifacts(
                 artifacts: 'middlewaresw.zip',
                 fingerprint: true,

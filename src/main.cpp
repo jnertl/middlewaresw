@@ -10,6 +10,7 @@
 std::atomic<bool> running(true);
 
 void handle_sigint(int) {
+    std::cout << "handle_sigint..." << std::endl;
     running = false;
 }
 

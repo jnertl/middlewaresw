@@ -1,5 +1,6 @@
 
 #include "Server.hpp"
+#include <fcntl.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -20,10 +21,13 @@ void Server::start(int updateIntervalMs)
 void Server::stop()
 {
     running = false;
+    std::cout << "Server::stop" << std::endl;
     if (server_thread.joinable())
         server_thread.join();
+    std::cout << "server_thread stopped" << std::endl;
     if (data_thread.joinable())
         data_thread.join();
+    std::cout << "data_thread stopped" << std::endl;
 }
 
 int Server::getLatestRpm()
@@ -52,40 +56,53 @@ void Server::run()
     int addrlen = sizeof(address);
     const int PORT = 5555;
 
-    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
+    bool fatal_error = false;
+    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         perror("socket failed");
-        return;
+        fatal_error = true;
     }
-    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
+    else
+    {
+        // Set server_fd to non-blocking
+        int flags = fcntl(server_fd, F_GETFL, 0);
+        if (flags == -1 || fcntl(server_fd, F_SETFL, flags | O_NONBLOCK) == -1) {
+            perror("fcntl O_NONBLOCK");
+            close(server_fd);
+            fatal_error = true;
+        }
+    }
+    std::cout << "Socket server created" << std::endl;
+    if (!fatal_error && setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
     {
         perror("setsockopt");
         close(server_fd);
-        return;
+        fatal_error = true;
     }
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(PORT);
-    if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
+    if (!fatal_error && bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
     {
         perror("bind failed");
         close(server_fd);
-        return;
+        fatal_error = true;
     }
-    if (listen(server_fd, 3) < 0)
+    if (!fatal_error && listen(server_fd, 3) < 0)
     {
         perror("listen");
         close(server_fd);
-        return;
+        fatal_error = true;
     }
-    std::cout << "Socket server started on port " << PORT << std::endl;
-    while (running)
+    if (!fatal_error)
+    {
+        std::cout << "Socket server started on port " << PORT << std::endl;
+    }
+
+    while (running && !fatal_error)
     {
         if ((client_fd = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addrlen)) < 0)
         {
-            if (running) {
-                perror("accept");
-            }
             continue;
         }
         std::cout << "Client connected." << std::endl;
@@ -110,6 +127,7 @@ void Server::run()
         std::cout << "Client disconnected." << std::endl;
         close(client_fd);
     }
+    std::cout << "Server stopped." << std::endl;
     close(server_fd);
 }
 

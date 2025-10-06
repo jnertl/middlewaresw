@@ -6,15 +6,16 @@
 
 ### [REQ001] C++ Application
 - The application must use CMake version 3.25 or newer for build configuration.
-  Use cmake_minimum_required(VERSION 3.25) in makefiles.
+   Use `cmake_minimum_required(VERSION 3.25)` in CMakeLists.txt.
 - The codebase must compile and run with C++20 standard or later. Compilation must succeed with `-std=c++20` or higher.
-  Use set(CMAKE_CXX_STANDARD_REQUIRED ON) in makefiles.
+   Use `set(CMAKE_CXX_STANDARD 20)` and `set(CMAKE_CXX_STANDARD_REQUIRED ON)` in CMakeLists.txt.
 
 ### [REQ002] TCP Socket Server Interface
 - The application must provide a TCP socket server listening on port 5555 (IPv4, INADDR_ANY).
 - The server must accept multiple client connections sequentially (one at a time).
+- The server uses `poll()` or `select()` to allow responsive shutdown and non-blocking accept.
 - Upon receiving any data from a connected client, the server must respond with the latest engine data as a Protocol Buffers message, prefixed by a 4-byte big-endian message size.
-- The server must log connection, disconnection, and message send events to the console.
+- The server must log connection, disconnection, and message send events to the console using `std::cout`.
 
 ### [REQ003] Protocol Buffers Integration
 - The file `engine_data.proto` must use Protocol Buffers syntax version 3 and define the following message:
@@ -32,14 +33,17 @@ message EngineData {
 - The generated C++ classes from this proto file must be used for all engine data serialization and deserialization.
 
 ### [REQ004] Engine Data Simulation
-- The `Receiver` class must generate random RPM values in the range [600, 7000] and temperature values in the range [70, 120].
-- The `Engine` interface class must declare pure virtual methods for `getRpm()` and `getTemperature()`.
+- The `Receiver` class must generate random using following rules:
+  RPM values in the range [0, 8000].
+  Temperature values in the range [-50, 500].
+  Oil Pressure values in the range [0, 200].
+- The `Engine` interface class must declare pure virtual methods for `getRpm()`, `getTemperature()` and `getOilPressure()`.
 - The `EngineImpl` class must implement `Engine` and use a `Receiver` instance to provide data.
 
 ## Testing Requirements
 
 ### [REQ100] Debug Output
-- The application must print the current engine RPM, oil pressure, and temperature to the standard output (console) at least once every 200 milliseconds during normal operation.
+- The application must print the current engine RPM, temperature and oil pressure to the standard output (console) at least once every 200 milliseconds during normal operation.
 - The output string must exactly match:
    `Engine RPM:[<rpm>], Temperature:[<temperature>], Oil Pressure:[<oil_pressure>] psi`
    where `<rpm>`, `<temperature>`, and `<oil_pressure>` are integer values representing the latest engine data.
@@ -68,8 +72,9 @@ message EngineData {
    - A shutdown message must be printed to the console.
 
 ### [REQ202] Error Handling
-- The server must use std::cout to print connection, disconnection, and message send events to the console.
+- The server must use `std::cout` to print connection, disconnection, and message send events to the console.
 - All socket and system calls must check for errors and print descriptive error messages to the console, including the function name, error code, and a human-readable description.
+- For non-blocking sockets, normal conditions such as `EAGAIN` or `EWOULDBLOCK` must not be logged as errors.
 - Recoverable errors (e.g., temporary network failures, client disconnects, resource exhaustion) must be handled by:
    - Logging the error with sufficient detail for debugging.
    - Attempting to retry the operation if appropriate (e.g., transient network errors).
@@ -105,7 +110,7 @@ message EngineData {
 
 ### [REQ206] Build Automation
 - The build and test scripts must work on a clean Linux environment with no manual setup except installing required dependencies.
-- Scripts must print clear error messages if any step fails.
+- Scripts must check exit codes after each build step, print clear error messages if any step fails, and exit with a nonzero code on failure.
 
 ### [REQ207] Documentation
 - The README file must describe all features, requirements, usage instructions, and environment setup steps.

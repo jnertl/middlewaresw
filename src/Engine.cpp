@@ -6,7 +6,7 @@ EngineImpl::EngineImpl() = default;
 
 // Static variables for simulating a crash in getRpm()
 static uint32_t untilCrashCounter = 0;
-static const bool crashEnabled = false;
+static const bool crashEnabled = true;
 
 int EngineImpl::getRpm() {
     if (crashEnabled && ++untilCrashCounter >= 3) {

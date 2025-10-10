@@ -14,6 +14,11 @@ void handle_sigint(int) {
     running = false;
 }
 
+void handle_sigterm(int) {
+    std::cout << "handle_sigterm..." << std::endl;
+    running = false;
+}
+
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         std::cerr << "Usage: " << argv[0] << " <UpdateIntervalMs>" << std::endl;
@@ -28,8 +33,11 @@ int main(int argc, char* argv[]) {
     Server server;
     server.start(updateIntervalMs);
 
-    // Set up signal handler for graceful shutdown
+    // Set up signal handler for interrupt and shutdown
     std::signal(SIGINT, handle_sigint);
+
+    // Set up signal handler for graceful shutdown
+    std::signal(SIGTERM, handle_sigterm);
 
     // Main loop
     while (running) {

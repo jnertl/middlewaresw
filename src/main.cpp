@@ -10,12 +10,12 @@
 std::atomic<bool> running(true);
 
 void handle_sigint(int) {
-    std::cout << "handle_sigint..." << std::endl;
+    std::cout << "handle_sigint..." << std::endl << std::flush;
     running = false;
 }
 
 void handle_sigterm(int) {
-    std::cout << "handle_sigterm..." << std::endl;
+    std::cout << "handle_sigterm..." << std::endl << std::flush;
     running = false;
 }
 
@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
         std::this_thread::sleep_for(std::chrono::milliseconds(updateIntervalMs));
     }
 
-    std::cout << "Shutting down..." << std::endl;
+    std::cout << "Shutting down..." << std::endl << std::flush;
     server.stop();
     return 0;
 }

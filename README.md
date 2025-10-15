@@ -109,3 +109,15 @@ To build and view a C++ code coverage report:
 
 ## Resource Management
 All sockets are closed after use. All threads are joined before application exit. No resource leaks are permitted.
+
+## Logging (spdlog)
+
+This project uses [spdlog](https://github.com/gabime/spdlog) for fast, header-only logging with timestamps.
+
+- spdlog is included as a git submodule in `external/spdlog`.
+- The `.gitmodules` file tracks the submodule:
+
+**To initialize the submodule after cloning:**
+```bash
+git submodule update --init --recursive
+```

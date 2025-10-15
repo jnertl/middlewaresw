@@ -12,7 +12,6 @@ extern "C" {
     ssize_t send(int, const void*, size_t, int) { return 0; }
     int close(int) { return 0; }
     int setsockopt(int, int, int, const void*, socklen_t) { return 0; }
-    uint32_t htonl(uint32_t x) { return x; }
 }
 #include <gtest/gtest.h>
 #include "Server.hpp"

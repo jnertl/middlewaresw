@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <iostream>
+#include <spdlog/spdlog.h>
 
 Server::Server() : updateIntervalMs(200), latest_rpm(0), latest_temperature(0), latest_oil_pressure(0), running(true) {}
 
@@ -21,13 +22,13 @@ void Server::start(int updateIntervalMs)
 void Server::stop()
 {
     running = false;
-    std::cout << "Server::stop" << std::endl;
+    spdlog::info("Server::stop");
     if (server_thread.joinable())
         server_thread.join();
-    std::cout << "server_thread stopped" << std::endl;
+    spdlog::info("server_thread stopped");
     if (data_thread.joinable())
         data_thread.join();
-    std::cout << "data_thread stopped" << std::endl;
+    spdlog::info("data_thread stopped");
 }
 
 int Server::getLatestRpm()
@@ -59,7 +60,7 @@ void Server::run()
     bool fatal_error = false;
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
-        perror("socket failed");
+        spdlog::error("socket failed");
         fatal_error = true;
     }
     else
@@ -67,15 +68,15 @@ void Server::run()
         // Set server_fd to non-blocking
         int flags = fcntl(server_fd, F_GETFL, 0);
         if (flags == -1 || fcntl(server_fd, F_SETFL, flags | O_NONBLOCK) == -1) {
-            perror("fcntl O_NONBLOCK");
+            spdlog::error("fcntl O_NONBLOCK");
             close(server_fd);
             fatal_error = true;
         }
     }
-    std::cout << "Socket server created" << std::endl;
+    spdlog::info("Socket server created");
     if (!fatal_error && setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
     {
-        perror("setsockopt");
+        spdlog::error("setsockopt");
         close(server_fd);
         fatal_error = true;
     }
@@ -84,19 +85,19 @@ void Server::run()
     address.sin_port = htons(PORT);
     if (!fatal_error && bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
     {
-        perror("bind failed");
+        spdlog::error("bind failed");
         close(server_fd);
         fatal_error = true;
     }
     if (!fatal_error && listen(server_fd, 3) < 0)
     {
-        perror("listen");
+        spdlog::error("listen failed");
         close(server_fd);
         fatal_error = true;
     }
     if (!fatal_error)
     {
-        std::cout << "Socket server started on port " << PORT << std::endl;
+        spdlog::info("Socket server started on port {}", PORT);
     }
 
     while (running && !fatal_error)
@@ -105,7 +106,7 @@ void Server::run()
         {
             continue;
         }
-        std::cout << "Client connected." << std::endl;
+        spdlog::info("Client connected.");
         char buffer[64];
         ssize_t valread;
         while ((valread = read(client_fd, buffer, sizeof(buffer) - 1)) > 0)
@@ -124,10 +125,10 @@ void Server::run()
                 send(client_fd, out.data(), out.size(), 0);
             }
         }
-        std::cout << "Client disconnected." << std::endl;
+        spdlog::info("Client disconnected.");
         close(client_fd);
     }
-    std::cout << "Server stopped." << std::endl;
+    spdlog::info("Server stopped.");
     close(server_fd);
 }
 

@@ -40,7 +40,7 @@ lcov --capture --directory . --output-file $COVERAGE_INFO -rc geninfo_unexecuted
 
 # Remove coverage for system and test files
 echo "Filtering coverage..."
-lcov --remove ${COVERAGE_INFO} '/usr/*' 'engine_data.pb.*' --output-file $COVERAGE_INFO
+lcov --remove ${COVERAGE_INFO} '/usr/*' 'spdlog/*' 'engine_data.pb.*' --output-file $COVERAGE_INFO
 
 # Generate HTML report
 genhtml ${COVERAGE_INFO} --output-directory ../$COVERAGE_HTML_DIR

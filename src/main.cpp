@@ -5,28 +5,28 @@
 #include <csignal>
 #include <atomic>
 #include "Server.hpp"
-
+#include <spdlog/spdlog.h>
 
 std::atomic<bool> running(true);
 
 void handle_sigint(int) {
-    std::cout << "handle_sigint..." << std::endl << std::flush;
+    spdlog::info("handle_sigint...");
     running = false;
 }
 
 void handle_sigterm(int) {
-    std::cout << "handle_sigterm..." << std::endl << std::flush;
+    spdlog::info("handle_sigterm...");
     running = false;
 }
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
-        std::cerr << "Usage: " << argv[0] << " <UpdateIntervalMs>" << std::endl;
+        spdlog::error("Usage: {} <UpdateIntervalMs>", argv[0]);
         return 1;
     }
     int updateIntervalMs = std::atoi(argv[1]);
     if (updateIntervalMs <= 0) {
-        std::cerr << "UpdateIntervalMs must be a positive integer." << std::endl;
+        spdlog::error("UpdateIntervalMs must be a positive integer.");
         return 1;
     }
 
@@ -45,11 +45,11 @@ int main(int argc, char* argv[]) {
         const int latest_rpm = server.getLatestRpm();
         const int latest_temperature = server.getLatestTemperature();
         const int latest_oil_pressure = server.getLatestOilPressure();
-        std::cout << "Engine RPM:[" << latest_rpm << "], Temperature:[" << latest_temperature << "], Oil Pressure:[" << latest_oil_pressure << "] psi" << std::endl;
+        spdlog::info("Engine RPM:[{}], Temperature:[{}], Oil Pressure:[{}] psi", latest_rpm, latest_temperature, latest_oil_pressure);
         std::this_thread::sleep_for(std::chrono::milliseconds(updateIntervalMs));
     }
 
-    std::cout << "Shutting down..." << std::endl << std::flush;
+    spdlog::info("Shutting down...");
     server.stop();
     return 0;
 }

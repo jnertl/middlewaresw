@@ -46,7 +46,10 @@ TEST(EngineTest, DatabaseTableExists) {
     
     {
         EngineImpl engine(db_path);
-        engine.getRpm(); // Trigger value storage
+        int rpm = engine.getRpm();
+        int temp = engine.getTemperature();
+        int oil = engine.getOilPressure();
+        engine.storeCurrentValues(rpm, temp, oil);
     }
     
     sqlite3* db;
@@ -72,12 +75,14 @@ TEST(EngineTest, ValuesAreStoredInDatabase) {
     
     {
         EngineImpl engine(db_path);
-        // Call getRpm multiple times to store values
-        engine.getRpm();
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        engine.getRpm();
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        engine.getRpm();
+        // Store values multiple times
+        for (int i = 0; i < 3; i++) {
+            int rpm = engine.getRpm();
+            int temp = engine.getTemperature();
+            int oil = engine.getOilPressure();
+            engine.storeCurrentValues(rpm, temp, oil);
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
     }
     
     sqlite3* db;
@@ -105,7 +110,10 @@ TEST(EngineTest, StoredValuesHaveTimestamp) {
     
     {
         EngineImpl engine(db_path);
-        engine.getRpm();
+        int rpm = engine.getRpm();
+        int temp = engine.getTemperature();
+        int oil = engine.getOilPressure();
+        engine.storeCurrentValues(rpm, temp, oil);
     }
     
     sqlite3* db;
@@ -133,7 +141,10 @@ TEST(EngineTest, StoredValuesAreInCorrectRange) {
     
     {
         EngineImpl engine(db_path);
-        engine.getRpm();
+        int rpm = engine.getRpm();
+        int temp = engine.getTemperature();
+        int oil = engine.getOilPressure();
+        engine.storeCurrentValues(rpm, temp, oil);
     }
     
     sqlite3* db;

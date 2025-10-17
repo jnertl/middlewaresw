@@ -49,7 +49,7 @@ void EngineImpl::initDatabase(const std::string& db_path) {
     }
 }
 
-void EngineImpl::storeValue(int rpm, int temperature, int oil_pressure) {
+void EngineImpl::storeCurrentValues(int rpm, int temperature, int oil_pressure) {
     if (!db) {
         return;
     }
@@ -90,11 +90,7 @@ int EngineImpl::getRpm() {
         int* p = nullptr;
         *p = 42; // Dereference null pointer to cause a crash
     }
-    int rpm = receiver.GetRpm();
-    int temperature = receiver.GetTemperature();
-    int oil_pressure = receiver.GetOilPressure();
-    storeValue(rpm, temperature, oil_pressure);
-    return rpm;
+    return receiver.GetRpm();
 }
 
 int EngineImpl::getTemperature() {

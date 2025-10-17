@@ -100,6 +100,7 @@ The `EngineImpl` class automatically stores each value retrieved from the receiv
 - **Retrieval**: Use `getStoredRpm()`, `getStoredTemperature()`, or `getStoredOilPressure()` to get a `StoredValue` struct containing:
   - `int value`: The measured value
   - `std::chrono::system_clock::time_point timestamp`: When the value was obtained
+- **Thread Safety**: All storage operations are protected by a mutex, ensuring safe concurrent access from multiple threads
 - **Use Cases**: Historical tracking, timing analysis, debugging, and correlation of measurements
 
 Example usage:

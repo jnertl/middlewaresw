@@ -22,30 +22,42 @@ int EngineImpl::getRpm() {
         *p = 42; // Dereference null pointer to cause a crash
     }
     int value = receiver.GetRpm();
-    stored_rpm = {value, std::chrono::system_clock::now()};
+    {
+        std::lock_guard<std::mutex> lock(storage_mutex);
+        stored_rpm = {value, std::chrono::system_clock::now()};
+    }
     return value;
 }
 
 int EngineImpl::getTemperature() {
     int value = receiver.GetTemperature();
-    stored_temperature = {value, std::chrono::system_clock::now()};
+    {
+        std::lock_guard<std::mutex> lock(storage_mutex);
+        stored_temperature = {value, std::chrono::system_clock::now()};
+    }
     return value;
 }
 
 int EngineImpl::getOilPressure() {
     int value = receiver.GetOilPressure();
-    stored_oil_pressure = {value, std::chrono::system_clock::now()};
+    {
+        std::lock_guard<std::mutex> lock(storage_mutex);
+        stored_oil_pressure = {value, std::chrono::system_clock::now()};
+    }
     return value;
 }
 
 StoredValue EngineImpl::getStoredRpm() const {
+    std::lock_guard<std::mutex> lock(storage_mutex);
     return stored_rpm;
 }
 
 StoredValue EngineImpl::getStoredTemperature() const {
+    std::lock_guard<std::mutex> lock(storage_mutex);
     return stored_temperature;
 }
 
 StoredValue EngineImpl::getStoredOilPressure() const {
+    std::lock_guard<std::mutex> lock(storage_mutex);
     return stored_oil_pressure;
 }

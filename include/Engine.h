@@ -3,6 +3,7 @@
 
 #include "Receiver.h"
 #include <chrono>
+#include <mutex>
 
 struct StoredValue {
     int value;
@@ -31,6 +32,7 @@ public:
     StoredValue getStoredOilPressure() const override;
 private:
     Receiver receiver;
+    mutable std::mutex storage_mutex;
     StoredValue stored_rpm;
     StoredValue stored_temperature;
     StoredValue stored_oil_pressure;

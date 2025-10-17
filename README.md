@@ -12,6 +12,8 @@ A C++ middleware application that simulates engine data and provides it to clien
 - `Receiver` class generates random RPM and temperature values in defined ranges
 - `Engine` interface class declares pure virtual methods for `getRpm()` and `getTemperature()`
 - `EngineImpl` implements `Engine` and uses `Receiver` for data
+- SQLite database storage: Engine values (RPM, temperature, oil pressure) are automatically stored with timestamps
+- Database file `engine_data.db` is created in the application directory
 - All shared data accessed by multiple threads is protected by mutexes
 - Graceful shutdown on SIGINT (Ctrl+C): all threads joined, sockets closed, shutdown message printed
 - Robust error handling: all socket and system calls check for errors and log descriptive messages
@@ -27,13 +29,14 @@ A C++ middleware application that simulates engine data and provides it to clien
 - Python 3.7 or newer, with PyQt5 (for client and/or other scripts)
 - GoogleTest (gtest) for C++ unit tests
 - Protocol Buffers (protobuf) C++ library and compiler
+- SQLite3 (for database storage)
 - lcov (for coverage reports)
 - CMake >= 3.10
 - Standard Linux build tools (gcc, g++, make, etc.)
 
 Install dependencies:
 ```bash
-sudo apt-get install libprotobuf-dev protobuf-compiler lcov
+sudo apt-get install libprotobuf-dev protobuf-compiler libsqlite3-dev lcov
 ```
 
 If you modify `engine_data.proto`, regenerate the C++ files:
@@ -82,6 +85,19 @@ During normal operation, the application prints engine RPM, oil pressure, and te
 ```
 Engine RPM:[<rpm>], Temperature:[<temperature>], Oil Pressure:[<oil_pressure>] psi
 ```
+
+## Database Storage
+The application automatically stores all engine sensor values to a SQLite database:
+- Database file: `engine_data.db` (created automatically in the application directory)
+- Table: `engine_values` with columns:
+  - `id` (INTEGER PRIMARY KEY AUTOINCREMENT)
+  - `rpm` (INTEGER NOT NULL)
+  - `temperature` (INTEGER NOT NULL)
+  - `oil_pressure` (INTEGER NOT NULL)
+  - `timestamp` (INTEGER NOT NULL) - Unix timestamp in milliseconds
+- Each time `getRpm()` is called, the current values are stored with a timestamp
+- The database persists across application restarts
+- Use SQLite tools to query historical data: `sqlite3 engine_data.db "SELECT * FROM engine_values;"`
 
 ## Graceful Shutdown
 Press Ctrl+C to stop the application. All threads will be joined, sockets closed, and a shutdown message printed.

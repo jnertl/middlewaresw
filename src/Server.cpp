@@ -141,6 +141,7 @@ void Server::updateDataLoop()
             latest_rpm = engine.getRpm();
             latest_temperature = engine.getTemperature();
             latest_oil_pressure = engine.getOilPressure();
+            engine.storeCurrentValues(latest_rpm, latest_temperature, latest_oil_pressure);
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(updateIntervalMs));
     }

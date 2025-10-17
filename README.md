@@ -10,8 +10,9 @@ A C++ middleware application that simulates engine data and provides it to clien
 - On client request, sends latest engine data as a Protocol Buffers message, prefixed by a 4-byte big-endian size
 - Engine data includes: RPM (600-7000), temperature (70-120°C), oil pressure (psi)
 - `Receiver` class generates random RPM and temperature values in defined ranges
-- `Engine` interface class declares pure virtual methods for `getRpm()` and `getTemperature()`
+- `Engine` interface class declares pure virtual methods for `getRpm()`, `getTemperature()`, and `getOilPressure()`
 - `EngineImpl` implements `Engine` and uses `Receiver` for data
+- **Stored values with timestamps**: Each value retrieved from the receiver is automatically stored with a timestamp in `EngineImpl`, accessible via `getStoredRpm()`, `getStoredTemperature()`, and `getStoredOilPressure()` methods
 - All shared data accessed by multiple threads is protected by mutexes
 - Graceful shutdown on SIGINT (Ctrl+C): all threads joined, sockets closed, shutdown message printed
 - Robust error handling: all socket and system calls check for errors and log descriptive messages
@@ -91,6 +92,23 @@ All socket and system calls check for errors and print descriptive error message
 
 ## Extensibility
 To add new fields to engine data, update `engine_data.proto` and regenerate C++ files. Update client code and README as needed.
+
+## Stored Values with Timestamps
+The `EngineImpl` class automatically stores each value retrieved from the receiver along with its timestamp. This feature enables tracking when each measurement was taken:
+
+- **Storage**: Each call to `getRpm()`, `getTemperature()`, or `getOilPressure()` stores the value and current timestamp
+- **Retrieval**: Use `getStoredRpm()`, `getStoredTemperature()`, or `getStoredOilPressure()` to get a `StoredValue` struct containing:
+  - `int value`: The measured value
+  - `std::chrono::system_clock::time_point timestamp`: When the value was obtained
+- **Use Cases**: Historical tracking, timing analysis, debugging, and correlation of measurements
+
+Example usage:
+```cpp
+EngineImpl engine;
+engine.getRpm(); // Fetches and stores RPM with timestamp
+StoredValue stored = engine.getStoredRpm();
+// Access: stored.value (the RPM), stored.timestamp (when it was measured)
+```
 
 ## Test Coverage for C++
 To build and view a C++ code coverage report:

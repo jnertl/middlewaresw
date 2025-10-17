@@ -49,6 +49,11 @@ __pycache__/
 # Test and coverage reports
 gtestresults.xml
 coverage_html
+coverage.info
+coverage_summary.txt
+
+# Database files
+*.db
 
 # IDE files
 .vscode

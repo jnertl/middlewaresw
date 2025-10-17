@@ -12,6 +12,7 @@ enable_testing()
 
 find_package(GTest REQUIRED)
 find_package(Protobuf REQUIRED)
+find_package(SQLite3 REQUIRED)
 
 file(GLOB TEST_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "../tests/*.cpp")
 
@@ -27,8 +28,8 @@ add_executable(test_coverage
     ${CMAKE_CURRENT_SOURCE_DIR}/../include/engine_data.pb.cc
 )
 
-target_include_directories(test_coverage PRIVATE ${GTEST_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/../include ${Protobuf_INCLUDE_DIRS})
+target_include_directories(test_coverage PRIVATE ${GTEST_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/../include ${Protobuf_INCLUDE_DIRS} ${SQLite3_INCLUDE_DIRS})
 target_compile_options(test_coverage PRIVATE --coverage -O0 -g)
-target_link_libraries(test_coverage PRIVATE ${GTEST_LIBRARIES} pthread ${Protobuf_LIBRARIES} spdlog::spdlog_header_only --coverage)
+target_link_libraries(test_coverage PRIVATE ${GTEST_LIBRARIES} pthread ${Protobuf_LIBRARIES} spdlog::spdlog_header_only SQLite::SQLite3 --coverage)
 
 add_test(NAME test_coverage COMMAND test_coverage)

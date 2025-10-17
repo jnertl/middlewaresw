@@ -2,6 +2,8 @@
 
 
 #include "Receiver.h"
+#include <sqlite3.h>
+#include <string>
 
 
 class Engine {
@@ -15,9 +17,14 @@ public:
 class EngineImpl : public Engine {
 public:
     EngineImpl();
+    EngineImpl(const std::string& db_path);
+    ~EngineImpl();
     int getRpm() override;
     int getTemperature() override;
     int getOilPressure() override;
 private:
     Receiver receiver;
+    sqlite3* db;
+    void initDatabase(const std::string& db_path);
+    void storeValue(int rpm, int temperature, int oil_pressure);
 };

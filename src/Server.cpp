@@ -7,7 +7,7 @@
 #include <iostream>
 #include <spdlog/spdlog.h>
 
-Server::Server() : updateIntervalMs(200), latest_rpm(0), latest_temperature(0), latest_oil_pressure(0), running(true) {}
+Server::Server() : updateIntervalMs(200), latest_rpm(0), latest_temperature(0), latest_oil_pressure(0), latest_speed(0), running(true) {}
 
 // Mutex to protect shared engine data
 std::mutex data_mutex;
@@ -47,6 +47,12 @@ int Server::getLatestOilPressure()
 {
     std::lock_guard<std::mutex> lock(data_mutex);
     return latest_oil_pressure;
+}
+
+int Server::getLatestSpeed()
+{
+    std::lock_guard<std::mutex> lock(data_mutex);
+    return latest_speed;
 }
 
 void Server::run()
@@ -118,6 +124,7 @@ void Server::run()
                 msg.set_rpm(latest_rpm);
                 msg.set_temperature(latest_temperature);
                 msg.set_oil_pressure(latest_oil_pressure);
+                msg.set_speed(latest_speed);
                 std::string out;
                 msg.SerializeToString(&out);
                 uint32_t size = htonl(static_cast<uint32_t>(out.size()));
@@ -141,7 +148,8 @@ void Server::updateDataLoop()
             latest_rpm = engine.getRpm();
             latest_temperature = engine.getTemperature();
             latest_oil_pressure = engine.getOilPressure();
-            engine.storeCurrentValues(latest_rpm, latest_temperature, latest_oil_pressure);
+            latest_speed = engine.getSpeed();
+            engine.storeCurrentValues(latest_rpm, latest_temperature, latest_oil_pressure, latest_speed);
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(updateIntervalMs));
     }

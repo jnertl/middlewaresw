@@ -5,4 +5,5 @@ message EngineData {
 	int32 rpm = 1;
 	int32 temperature = 2;
 	int32 oil_pressure = 3; // psi, range 0-200
+	int32 speed = 4; // km/h, range 0-500
 }

@@ -36,6 +36,7 @@ void EngineImpl::initDatabase(const std::string& db_path) {
         "rpm INTEGER NOT NULL,"
         "temperature INTEGER NOT NULL,"
         "oil_pressure INTEGER NOT NULL,"
+        "speed INTEGER NOT NULL,"
         "timestamp INTEGER NOT NULL"
         ");";
 
@@ -49,7 +50,7 @@ void EngineImpl::initDatabase(const std::string& db_path) {
     }
 }
 
-void EngineImpl::storeCurrentValues(int rpm, int temperature, int oil_pressure) {
+void EngineImpl::storeCurrentValues(int rpm, int temperature, int oil_pressure, int speed) {
     if (!db) {
         return;
     }
@@ -60,8 +61,8 @@ void EngineImpl::storeCurrentValues(int rpm, int temperature, int oil_pressure) 
     ).count();
 
     const char* insert_sql = 
-        "INSERT INTO engine_values (rpm, temperature, oil_pressure, timestamp) "
-        "VALUES (?, ?, ?, ?);";
+        "INSERT INTO engine_values (rpm, temperature, oil_pressure, speed, timestamp) "
+        "VALUES (?, ?, ?, ?, ?);";
 
     sqlite3_stmt* stmt;
     int rc = sqlite3_prepare_v2(db, insert_sql, -1, &stmt, nullptr);
@@ -73,7 +74,8 @@ void EngineImpl::storeCurrentValues(int rpm, int temperature, int oil_pressure) 
     sqlite3_bind_int(stmt, 1, rpm);
     sqlite3_bind_int(stmt, 2, temperature);
     sqlite3_bind_int(stmt, 3, oil_pressure);
-    sqlite3_bind_int64(stmt, 4, timestamp);
+    sqlite3_bind_int(stmt, 4, speed);
+    sqlite3_bind_int64(stmt, 5, timestamp);
 
     rc = sqlite3_step(stmt);
     if (rc != SQLITE_DONE) {
@@ -99,4 +101,8 @@ int EngineImpl::getTemperature() {
 
 int EngineImpl::getOilPressure() {
     return receiver.GetOilPressure();
+}
+
+int EngineImpl::getSpeed() {
+    return receiver.GetSpeed();
 }

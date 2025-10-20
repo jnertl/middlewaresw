@@ -14,6 +14,7 @@ public: // Methods
     int getLatestRpm();
     int getLatestTemperature();
     int getLatestOilPressure();
+    int getLatestSpeed();
 
 private: // Methods
     void run();
@@ -26,6 +27,7 @@ private: // Data members
     int latest_rpm;
     int latest_temperature;
     int latest_oil_pressure;
+    int latest_speed;
     std::atomic<bool> running;
     std::thread server_thread;
     std::thread data_thread;

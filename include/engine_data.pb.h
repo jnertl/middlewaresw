@@ -177,6 +177,7 @@ class EngineData final :
     kRpmFieldNumber = 1,
     kTemperatureFieldNumber = 2,
     kOilPressureFieldNumber = 3,
+    kSpeedFieldNumber = 4,
   };
   // int32 rpm = 1;
   void clear_rpm();
@@ -205,6 +206,15 @@ class EngineData final :
   void _internal_set_oil_pressure(int32_t value);
   public:
 
+  // int32 speed = 4;
+  void clear_speed();
+  int32_t speed() const;
+  void set_speed(int32_t value);
+  private:
+  int32_t _internal_speed() const;
+  void _internal_set_speed(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:EngineData)
  private:
   class _Internal;
@@ -216,6 +226,7 @@ class EngineData final :
     int32_t rpm_;
     int32_t temperature_;
     int32_t oil_pressure_;
+    int32_t speed_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -290,6 +301,26 @@ inline void EngineData::_internal_set_oil_pressure(int32_t value) {
 inline void EngineData::set_oil_pressure(int32_t value) {
   _internal_set_oil_pressure(value);
   // @@protoc_insertion_point(field_set:EngineData.oil_pressure)
+}
+
+// int32 speed = 4;
+inline void EngineData::clear_speed() {
+  _impl_.speed_ = 0;
+}
+inline int32_t EngineData::_internal_speed() const {
+  return _impl_.speed_;
+}
+inline int32_t EngineData::speed() const {
+  // @@protoc_insertion_point(field_get:EngineData.speed)
+  return _internal_speed();
+}
+inline void EngineData::_internal_set_speed(int32_t value) {
+  
+  _impl_.speed_ = value;
+}
+inline void EngineData::set_speed(int32_t value) {
+  _internal_set_speed(value);
+  // @@protoc_insertion_point(field_set:EngineData.speed)
 }
 
 #ifdef __GNUC__

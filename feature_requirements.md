@@ -37,18 +37,21 @@ message EngineData {
   RPM values in the range [0, 8000].
   Temperature values in the range [-50, 500].
   Oil Pressure values in the range [0, 200].
+   Speed values in the range [0, 500] (km/h).
 - The `Engine` interface class must declare pure virtual methods for `getRpm()`, `getTemperature()` and `getOilPressure()`.
+   The `Engine` interface class must declare pure virtual methods for `getRpm()`, `getTemperature()`, `getOilPressure()` and `getSpeed()`.
 - The `EngineImpl` class must implement `Engine` and use a `Receiver` instance to provide data.
+   The `EngineImpl` class must implement `getSpeed()` and persist speed values if the storage layer is present.
 
 ## Testing Requirements
 
 ### [REQ100] Debug Output
-- The application must print the current engine RPM, temperature and oil pressure to the standard output (console) at least once every 200 milliseconds during normal operation.
+- The application must print the current engine RPM, temperature, oil pressure and speed to the standard output (console) at least once every 200 milliseconds during normal operation.
 - The output string must exactly match:
-   `Engine RPM:[<rpm>], Temperature:[<temperature>], Oil Pressure:[<oil_pressure>] psi`
-   where `<rpm>`, `<temperature>`, and `<oil_pressure>` are integer values representing the latest engine data.
-- Each output line must be printed on a new line, with no extra whitespace before or after the string.
-- The output must be visible in the terminal when running the application interactively.
+    `Engine RPM:[<rpm>], Temperature:[<temperature>], Oil Pressure:[<oil_pressure>] psi, Speed:[<speed>] km/h`
+    where `<rpm>`, `<temperature>`, `<oil_pressure>` and `<speed>` are integer values representing the latest engine data.
+ - Each output line must be printed on a new line, with no extra whitespace before or after the string.
+ - The output must be visible in the terminal when running the application interactively.
 
 ### [REQ101] Unit Tests
 - All public classes and methods must have corresponding unit tests implemented using GoogleTest.
@@ -88,6 +91,7 @@ message EngineData {
 
 ### [REQ203] Extensible Data Model
 - The engine data model must allow new fields to be added to `engine_data.proto` and corresponding C++ code with minimal changes (no breaking changes for existing clients).
+   Example: adding a `speed` (int32 speed = 4) field measured in km/h and constrained to 0-500 must be backward-compatible for older clients that ignore unknown fields.
 
 ### [REQ204] Client Compatibility
 - The Python client and any other clients must be able to parse the current Protocol Buffers message format and receive engine data from the server without errors.
@@ -107,6 +111,7 @@ message EngineData {
 - Coverage measurement must exclude test code and focus on application logic.
 - If coverage falls below the threshold, add additional tests to cover untested branches, conditions, and error paths.
 - Coverage reports must be generated after each major change and included in project documentation or CI reports.
+ - Tests must include validation for the `speed` field: generation range (0-500), proper exposure through the `Engine` API, persistence (if applicable), and inclusion in debug output and protobuf serialization.
 
 ### [REQ206] Build Automation
 - The build and test scripts must work on a clean Linux environment with no manual setup except installing required dependencies.

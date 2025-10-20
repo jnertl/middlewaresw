@@ -45,7 +45,8 @@ int main(int argc, char* argv[]) {
         const int latest_rpm = server.getLatestRpm();
         const int latest_temperature = server.getLatestTemperature();
         const int latest_oil_pressure = server.getLatestOilPressure();
-        spdlog::info("Engine RPM:[{}], Temperature:[{}], Oil Pressure:[{}] psi", latest_rpm, latest_temperature, latest_oil_pressure);
+        const int latest_speed = server.getLatestSpeed();
+        spdlog::info("Engine RPM:[{}], Temperature:[{}], Oil Pressure:[{}] psi, Speed:[{}] km/h", latest_rpm, latest_temperature, latest_oil_pressure, latest_speed);
         std::this_thread::sleep_for(std::chrono::milliseconds(updateIntervalMs));
     }
 

@@ -8,8 +8,20 @@ extern "C" {
     int bind(int, const struct sockaddr*, socklen_t) { return 0; }
     int listen(int, int) { return 0; }
     int accept(int, struct sockaddr*, socklen_t*) { return 43; }
-    ssize_t read(int, void*, size_t) { return 0; }
-    ssize_t send(int, const void*, size_t, int) { return 0; }
+    ssize_t read(int, void* buf, size_t count) {
+        static int called = 0;
+        if (called == 0) {
+            // write a single byte to trigger the server's read>0 path
+            if (count > 0) {
+                static const char c = 'x';
+                ((char*)buf)[0] = c;
+                called = 1;
+                return 1; // one byte read
+            }
+        }
+        return 0; // subsequent calls signal EOF
+    }
+    ssize_t send(int, const void* , size_t count, int) { return (ssize_t)count; }
     int close(int) { return 0; }
     int setsockopt(int, int, int, const void*, socklen_t) { return 0; }
 }
@@ -23,6 +35,7 @@ TEST(ServerTest, InitialValuesAreZero) {
     EXPECT_EQ(server.getLatestRpm(), 0);
     EXPECT_EQ(server.getLatestTemperature(), 0);
     EXPECT_EQ(server.getLatestOilPressure(), 0);
+    EXPECT_EQ(server.getLatestSpeed(), 0);
 }
 
 TEST(ServerTest, DataUpdatesAfterStart) {
@@ -31,15 +44,18 @@ TEST(ServerTest, DataUpdatesAfterStart) {
     int initial_rpm = server.getLatestRpm();
     int initial_temp = server.getLatestTemperature();
     int initial_oil = server.getLatestOilPressure();
+    int initial_speed = server.getLatestSpeed();
     std::this_thread::sleep_for(std::chrono::milliseconds(300));
     int updated_rpm = server.getLatestRpm();
     int updated_temp = server.getLatestTemperature();
     int updated_oil = server.getLatestOilPressure();
+    int updated_speed = server.getLatestSpeed();
     server.stop();
     // Values should change after update thread runs
     EXPECT_NE(initial_rpm, updated_rpm);
     EXPECT_NE(initial_temp, updated_temp);
     EXPECT_NE(initial_oil, updated_oil);
+    EXPECT_NE(initial_speed, updated_speed);
 }
 
 TEST(ServerTest, StartAndStopDoesNotThrow) {
